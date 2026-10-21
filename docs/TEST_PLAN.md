@@ -162,7 +162,7 @@ Run on 12-Oct-2026 on `main` after the quiz engine was completed, together with 
 | TC-17 | SEC-3, NFR-4 | Security / negative | A 5000-character line at the menu, then `4` | One `Error:` message, program continues and exits normally | **Pass** |
 | TC-18 | SEC-5, SEC-3 | Inspection | Search the source for `fopen`, `gets`, `scanf`, `sprintf`, `strcpy` | File names are fixed constants; no unsafe input functions | **Pass** |
 | TC-19 | NFR-5 | Inspection | Build `score.c` with its test, without the other modules | Builds and runs on its own | **Pass** (`make test`) |
-| TC-20 | NFR-3 | Inspection | List every message printed on an error path | Each starts with `Error:` and is followed by a prompt or the menu | **Pass** |
+| TC-20 | NFR-3 | Inspection / usability | List every message printed on an error path, then finish a quiz using only the on-screen prompts | Each error starts with `Error:` and is followed by a prompt or the menu; every screen has a clear prompt | **Pass** (5 `Error:` messages; quiz finished with prompts only) |
 
 ### 13.2 Requirements Traceability Matrix
 
