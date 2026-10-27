@@ -53,7 +53,7 @@ Work in progress (Sprint-1).
 - [Team tasks](TEAM-TASKS.md)
 - [AI use note](docs/AI_USE.md)
 - [Deviations from the submitted documents](docs/DEVIATIONS.md)
-- Demo videos (replays of real runs of the program): [Sprint-1 demo](docs/demo/sprint1-demo.mp4), [Sprint-2 demo](docs/demo/sprint2-demo.mp4)
+- Demo videos, screen captures of a real terminal running the program: [Sprint-1](docs/demo/sprint1-demo-recording.mp4), [Sprint-2](docs/demo/sprint2-demo-recording.mp4). Replay versions made from the program's output: [Sprint-1](docs/demo/sprint1-demo.mp4), [Sprint-2](docs/demo/sprint2-demo.mp4)
 
 The same documents are also kept as text: [SRS.md](SRS.md), [docs/SAD.md](docs/SAD.md), [docs/TEST_PLAN.md](docs/TEST_PLAN.md).
 
