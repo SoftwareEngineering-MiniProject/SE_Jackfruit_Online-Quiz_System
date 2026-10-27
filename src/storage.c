@@ -1,12 +1,20 @@
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "storage.h"
 
 #define RESULTS_FILE "results.txt"
-#define MAX_ENTRIES  1000          /* more results than this are ignored */
-#define NAME_LEN     64
-#define LINE_LEN     256
+#define MAX_NAME     64      /* longest player name kept */
+#define MAX_ENTRIES  1000    /* most records loaded from the file */
+#define LINE_LEN     128     /* a valid "Name,Score" line is well under this */
+
+/* One saved record from results.txt */
+typedef struct {
+    char name[MAX_NAME + 1];
+    int  score;
+} Entry;
 
 /* Appends "Name,Score" as one line to results.txt.
    Returns 0 on success, -1 on any error. */
@@ -37,94 +45,83 @@ int save_result(const char *name, const Result *r)
     return 0;
 }
 
-typedef struct {
-    char name[NAME_LEN];
-    int score;
-} Entry;
-
-/* Reads one line (without the line ending) into buf and drops any extra
-   characters so the next read starts on a new line. Returns 0 on success,
-   -1 at end of file. */
-static int read_line(FILE *fp, char *buf, size_t size)
+/* REQ-14: turn one "Name,Score" line into an Entry.
+   Returns 1 if the line is valid, 0 if it is damaged (the caller skips it). */
+static int parse_line(char *line, Entry *e)
 {
-    size_t len;
-    int c;
+    char *comma, *end;
+    long  score;
 
-    if (fgets(buf, (int)size, fp) == NULL)
-        return -1;
-    len = strlen(buf);
-    if (len > 0 && buf[len - 1] == '\n') {
-        buf[--len] = '\0';
-    } else if (!feof(fp)) {
-        while ((c = fgetc(fp)) != '\n' && c != EOF)
-            ;
+    line[strcspn(line, "\r\n")] = '\0';          /* remove the line ending */
+
+    comma = strrchr(line, ',');                  /* score comes after the last comma */
+    if (comma == NULL || comma == line) {
+        return 0;                                /* no comma, or empty name */
     }
-    if (len > 0 && buf[len - 1] == '\r')
-        buf[len - 1] = '\0';
-    return 0;
-}
+    if ((size_t)(comma - line) > MAX_NAME) {
+        return 0;                                /* name too long for the Entry */
+    }
 
-/* Splits "Name,Score" into an Entry. Returns 0 if the line is valid,
-   -1 if it is in the wrong format (such lines are skipped). */
-static int parse_entry(const char *line, Entry *e)
-{
-    const char *comma = strrchr(line, ',');
-    char *end;
-    long score;
-    size_t n;
-
-    if (comma == NULL || comma == line)
-        return -1;
+    errno = 0;
     score = strtol(comma + 1, &end, 10);
-    if (end == comma + 1 || *end != '\0' || score < 0 || score > 1000000)
-        return -1;
-    n = (size_t)(comma - line);
-    if (n >= NAME_LEN)
-        n = NAME_LEN - 1;
-    memcpy(e->name, line, n);
-    e->name[n] = '\0';
-    e->score = (int)score;
-    return 0;
-}
-
-/* Reads results.txt and prints the entries from the highest score to the
-   lowest. Entries with the same score keep the order they were saved in. */
-void show_leaderboard(void)
-{
-    static Entry list[MAX_ENTRIES];
-    char line[LINE_LEN];
-    Entry e;
-    FILE *fp;
-    int count = 0;
-    int i, j;
-
-    fp = fopen(RESULTS_FILE, "r");
-    if (fp == NULL) {
-        printf("\nNo results yet. Play a quiz first.\n");
-        return;
+    if (end == comma + 1 || *end != '\0' || errno == ERANGE ||
+        score < 0 || score > INT_MAX) {
+        return 0;                                /* score is not a valid number */
     }
 
-    while (read_line(fp, line, sizeof line) == 0) {
-        if (parse_entry(line, &e) != 0)
-            continue;                       /* skip lines in the wrong format */
-        if (count >= MAX_ENTRIES)
-            break;
-        /* Insert so the list stays sorted high to low; "<" keeps equal
-           scores in the order they were saved. */
-        for (i = count; i > 0 && list[i - 1].score < e.score; i--)
-            list[i] = list[i - 1];
-        list[i] = e;
-        count++;
+    memcpy(e->name, line, (size_t)(comma - line));
+    e->name[comma - line] = '\0';
+    e->score = (int)score;
+    return 1;
+}
+
+/* REQ-14: read the saved results from results.txt into list[].
+   Returns how many records were read. A file that does not exist yet counts
+   as 0 records. Returns -1 if the file exists but cannot be read.
+   Damaged lines are skipped. */
+static int load_results(Entry list[], int max)
+{
+    FILE *fp = fopen(RESULTS_FILE, "r");
+    char  line[LINE_LEN];
+    int   count = 0;
+
+    if (fp == NULL) {
+        return (errno == ENOENT) ? 0 : -1;
+    }
+
+    while (count < max && fgets(line, sizeof line, fp) != NULL) {
+        size_t len = strlen(line);
+
+        if (len > 0 && line[len - 1] != '\n' && !feof(fp)) {
+            int c;                               /* line longer than the buffer: */
+            while ((c = fgetc(fp)) != '\n' && c != EOF) {
+                ;                                /* skip the rest of it */
+            }
+            continue;
+        }
+        if (parse_line(line, &list[count])) {
+            count++;
+        }
+    }
+
+    if (ferror(fp)) {
+        fclose(fp);
+        return -1;
     }
     fclose(fp);
+    return count;
+}
 
-    if (count == 0) {
-        printf("\nNo results yet. Play a quiz first.\n");
-        return;
+/* For now this prints the saved results in file order, so REQ-14 can be
+   checked. Sorting is REQ-15; messages for no results / read errors are
+   REQ-16 and NFR-2. */
+void show_leaderboard(void)
+{
+    static Entry list[MAX_ENTRIES];     /* static: keeps the big array off the stack */
+    int n = load_results(list, MAX_ENTRIES);
+    int i;
+
+    for (i = 0; i < n; i++) {
+        printf("%-30s %d\n", list[i].name, list[i].score);
     }
-
-    printf("\n===== Leaderboard =====\n");
-    printf("%-5s %-30s %s\n", "Rank", "Name", "Score");
-    for (j = 0; j < count; j++)
-        printf("%-5d %-30.30s %d\n", j + 1, list[j].name, list[j].score);
 }
