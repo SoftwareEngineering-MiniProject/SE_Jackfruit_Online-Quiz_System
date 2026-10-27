@@ -1,3 +1,10 @@
+/*
+ * Scoring module (Vikas).
+ * Responsible for calculating scores, percentages, answer counts,
+ * Pass/Fail status, and displaying the final result.
+ * Question loading and result file operations belong to other modules.
+ */
+
 #include "score.h"
 
 #include <stddef.h>
