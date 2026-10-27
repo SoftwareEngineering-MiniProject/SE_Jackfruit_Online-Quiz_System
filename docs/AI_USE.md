@@ -12,7 +12,7 @@
 | Documents | Wrote the SAD and Test Plan, fixed and simplified the SRS, and converted all three to `.docx` and `.pdf` | Tejas reviewed and asked for changes (shorter, simpler wording) |
 | Test scripts | Wrote `tests/run_system_tests.sh`, which runs the 20 system test cases | Results are from real runs of the program |
 | GitHub setup | Rewrote the issues as user stories, created the epics, moved the repo and the board to the organisation | Tejas created the organisation and gave the instructions |
-| Demo videos | Made the demo videos in `docs/demo/`: two screen captures of a real terminal window (`*-demo-recording.mp4`, commands typed in by a script) and two replays built from the real output of the program (`sprint1-demo.mp4`, `sprint2-demo.mp4`) | The replays say so on their first slide |
+| Demo videos | Made `docs/demo/sprint1-demo.mp4` and `sprint2-demo.mp4`: screen captures of a real terminal window running the program, with the commands typed in by a script | Tejas checked the videos |
 | Teaching | Explained the project, the SRS and the testing so Tejas could answer questions | |
 
 ## Prompts
