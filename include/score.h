@@ -3,13 +3,24 @@
 
 #include "quiz.h"
 
-/* score.h (Vikas) */
+/*
+ * Scoring module (Vikas).
+ * This module calculates and displays quiz results.
+ * It does not load questions or access result storage.
+ */
 typedef struct {
-    int score, correct, incorrect, total;
-    double percent;
-    int passed;                /* 1 = Pass, 0 = Fail */
+    int score;       /* Number of correct answers */
+    int correct;     /* Number of correct answers */
+    int incorrect;   /* Number of incorrect answers */
+    int total;       /* Total number of questions */
+    double percent;  /* Score as a percentage */
+    int passed;      /* 1 = Pass, 0 = Fail */
 } Result;
+
+/* Calculate the result using questions and submitted answers. */
 Result calculate_result(const Question qs[], const char answers[], int n);
-void   show_result(const Result *r);
+
+/* Display the completed result to the user. */
+void show_result(const Result *r);
 
 #endif
