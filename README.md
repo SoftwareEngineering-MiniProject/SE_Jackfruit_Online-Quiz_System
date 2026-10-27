@@ -51,6 +51,7 @@ Work in progress (Sprint-1).
 - [SAD: how the program is built](docs/SAD.pdf)
 - [Test Plan: how we check it](docs/Test_Plan.pdf)
 - [Team tasks](TEAM-TASKS.md)
+- [AI use note](docs/AI_USE.md)
 - Demo videos (replays of real runs of the program): [Sprint-1 demo](docs/demo/sprint1-demo.mp4), [Sprint-2 demo](docs/demo/sprint2-demo.mp4)
 
 The same documents are also kept as text: [SRS.md](SRS.md), [docs/SAD.md](docs/SAD.md), [docs/TEST_PLAN.md](docs/TEST_PLAN.md).

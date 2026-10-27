@@ -64,7 +64,7 @@
 
 **Types.** Functional, negative (wrong input and file errors), boundary (40% pass mark), performance (timing), usability and inspection, security (5.1), and regression (earlier tests run again after each merge).
 
-**Method.** Input is sent to the program from a script (`printf '1\nAsha\n...' | ./quiz`), so each run is the same. The output is compared with what the SRS says.
+**Method.** Input is sent to the program from a script (`printf '1\nAsha\n...' | ./quiz`), so each run is the same. The output is compared with what the SRS says. All system test cases are scripted in `tests/run_system_tests.sh` (run `make` and then `bash tests/run_system_tests.sh`); it prints PASS or FAIL for each test case.
 
 **Entry criteria.** The code builds without warnings and the GitHub Actions build is green.
 **Exit criteria.** All planned test cases are run, each failure has a recorded defect with an owner, and no critical defect (crash, data loss, wrong score) is open.
@@ -139,7 +139,7 @@ Test Plan (this document), test cases and results (Section 13), unit test source
 
 ### 13.1 Test Cases
 
-Run on 12-Oct-2026 on `main` after the quiz engine was completed, together with the 8 scoring unit tests in `tests/test_score.c`. **Not run** means planned for Sprint-2.
+First run on 12-Oct-2026 (the quiz engine and leaderboard were not merged yet). Run again on 27-Oct-2026 on the final `main` with `tests/run_system_tests.sh` and the 8 scoring unit tests in `tests/test_score.c`: all 20 pass. The Result column shows what was observed.
 
 | TC | Requirement | Type | Steps | Expected result | Result |
 |---|---|---|---|---|---|
@@ -191,5 +191,7 @@ Every requirement in SRS v1.1 appears in at least one test case.
 - Test cases designed: 20. Executed: 20. **Pass: 20. Fail: 0. Not run: 0.**
 - Requirement coverage by test cases: 100% of REQ-1 to REQ-22 and NFR-1 to NFR-5.
 - Unit test coverage of `score.c`: 100% of lines and 100% of branches (measured with `gcov`).
+- NFR-1 (speed): a full quiz run took 127 ms and the leaderboard of 100 results took 80 ms, against a limit of 1 second (TC-15).
+- NFR-2 (security): SEC-1 to SEC-6 are checked by TC-05, TC-09, TC-14, TC-16, TC-17 and TC-18, and all pass.
 
 A status update is made after each merged pull request that changes how the program behaves, and a final test summary is written at the code freeze.
