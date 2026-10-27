@@ -229,9 +229,8 @@ Enter your choice (1-4):
 
 | # | Item | Plan |
 |---|---|---|
-| 1 | Leaderboard read and sort are not implemented | Sprint-2, Vaishnavi (REQ-14 to REQ-16) |
-| 2 | REQ-12 says "score and percentage" are passed to storage, but the file stores name and score only (BR-4) | The whole `Result` is passed; only name and score are saved |
-| 3 | Equal scores have no set order on the leaderboard | Keep the order they appear in the file |
+| 1 | REQ-12 says "score and percentage" are passed to storage, but the file stores name and score only (BR-4) | The whole `Result` is passed; only name and score are saved |
+| 2 | Equal scores have no set order on the leaderboard | They keep the order they were saved in |
 
 ---
 

@@ -33,7 +33,7 @@ Work in progress (Sprint-1).
 | Scoring and result screen | Done, with unit tests |
 | Saving results | Done |
 | Quiz questions and answers | Done |
-| Leaderboard | Planned for Sprint-2 |
+| Leaderboard | Done |
 
 ## Folders
 

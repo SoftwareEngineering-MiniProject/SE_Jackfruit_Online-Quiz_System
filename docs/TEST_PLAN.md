@@ -155,9 +155,9 @@ Run on 12-Oct-2026 on `main` after the quiz engine was completed, together with 
 | TC-10 | REQ-12 | Integration | Complete a quiz as `Asha` | New line `Asha,<score>` is added to `results.txt` | **Pass** (`Asha,3`) |
 | TC-11 | REQ-17 to REQ-22 | System | Start quiz, answer every question | One question at a time with options A to D; each answer recorded; result shown at the end | **Pass** |
 | TC-12 | REQ-19 | Negative | During a question enter `E`, an empty line, `1`, then `B` | `Error:` and the same question each time; `B` is accepted | **Pass** |
-| TC-13 | REQ-14, REQ-15 | Functional | `results.txt` has `Vikas,10`, `Vaishnavi,8`, `Tejas,9`; View Leaderboard | Order shown is 10, 9, 8 | **Not run** |
-| TC-14 | REQ-16, SEC-4 | Negative | Delete `results.txt`; View Leaderboard | "No results yet" message, back to the menu, no crash | **Fail** (known): leaderboard is a stub; due in Sprint-2 |
-| TC-15 | NFR-1 | Performance | Time a full scripted run | Each response within 1 second | **Pass** (0.07 s) |
+| TC-13 | REQ-14, REQ-15 | Functional | `results.txt` has `Vikas,10`, `Vaishnavi,8`, `Tejas,9`; View Leaderboard | Order shown is 10, 9, 8 | **Pass** (Vikas 10, Tejas 9, Vaishnavi 8) |
+| TC-14 | REQ-16, SEC-4 | Negative | Delete `results.txt`; View Leaderboard | "No results yet" message, back to the menu, no crash | **Pass** ("No results yet" for a missing, empty or unreadable file; bad lines skipped) |
+| TC-15 | NFR-1 | Performance | Time a full scripted run | Each response within 1 second | **Pass** (full run 0.07 s; leaderboard of 100 results 0.11 s) |
 | TC-16 | SEC-1, SEC-4 | Security | Make `results.txt` a folder and save a result | Only `Error: could not save your result.`, no path or system text | **Pass** |
 | TC-17 | SEC-3, NFR-4 | Security / negative | A 5000-character line at the menu, then `4` | One `Error:` message, program continues and exits normally | **Pass** |
 | TC-18 | SEC-5, SEC-3 | Inspection | Search the source for `fopen`, `gets`, `scanf`, `sprintf`, `strcpy` | File names are fixed constants; no unsafe input functions | **Pass** |
@@ -186,9 +186,9 @@ Every requirement in SRS v1.1 appears in at least one test case.
 
 ## 14. Test Metrics and Reporting
 
-**Report after the first execution (12-Oct-2026)**
+**Report after the second execution (27-Oct-2026, with the leaderboard)**
 
-- Test cases designed: 20. Executed: 19. **Pass: 18. Fail: 1** (TC-14, leaderboard not yet implemented). **Not run: 1** (TC-13, Sprint-2).
+- Test cases designed: 20. Executed: 20. **Pass: 20. Fail: 0. Not run: 0.**
 - Requirement coverage by test cases: 100% of REQ-1 to REQ-22 and NFR-1 to NFR-5.
 - Unit test coverage of `score.c`: 100% of lines and 100% of branches (measured with `gcov`).
 
