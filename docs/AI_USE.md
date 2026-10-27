@@ -36,4 +36,4 @@ I set the tasks and checked the results, and I decided what stayed. I created th
 
 Commits made with the AI's help are under my name. The menu is mine. The scoring module is Vikas's, question loading and input checks are Sanjana's, and saving results is Vaishnavi's. Their commits keep their own names in the Git history.
 
-I can share the chat record if it is needed.
+
