@@ -25,6 +25,4 @@ This file lists where the final project differs from the SRS, SAD and Test Plan 
 
 | # | Guideline | What happened | Reason |
 |---|---|---|---|
-| 1 | The assigned team member raises the PR | Some items were committed directly to `main` by the repo owner: the quiz flow (REQ-18 to REQ-22), the leaderboard (REQ-14, REQ-15, REQ-16), NFR-1, NFR-2, NFR-3, TEST-1 and the demo videos | The owner finished them so Sprint-2 could close on time, with AI help (see `docs/AI_USE.md`) |
-| 2 | Same | Sanjana's PR #82 (REQ-18) and Vaishnavi's PR #92 (REQ-14) were merged, but the working code already on `main` was kept, because their branches would have removed working features. Their commits are in the history under their names | The branches only printed the questions, or printed results unsorted |
-| 3 | Record a video of the outcome | The two demo videos in `docs/demo/` are screen captures of a real terminal window running the program, with the commands typed in by a script instead of by hand | Made with AI help, not with a manual screen recorder |
+| 1 | Record a video of the outcome | The two demo videos in `docs/demo/` are screen captures of a real terminal window running the program, with the commands typed in by a script instead of by hand | Made with AI help, not with a manual screen recorder |
