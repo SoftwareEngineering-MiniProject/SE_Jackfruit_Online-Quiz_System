@@ -51,7 +51,7 @@ Work in progress (Sprint-1).
 - [SAD: how the program is built](docs/SAD.pdf)
 - [Test Plan: how we check it](docs/Test_Plan.pdf)
 - [Team tasks](TEAM-TASKS.md)
-- Test reports: [unit](docs/reports/unit_test_report.md), [system validation](docs/reports/system_validation_report.md), [code coverage](docs/reports/code_coverage_report.md), [branch coverage](docs/reports/branch_coverage_report.md)
+- Test reports in docs/reports: [unit](docs/reports/unit_test_report.md), [system validation](docs/reports/system_validation_report.md), [code coverage](docs/reports/code_coverage_report.md), [branch coverage](docs/reports/branch_coverage_report.md)
 - [AI use note](docs/AI_USE.md)
 - [Deviations from the submitted documents](docs/DEVIATIONS.md)
 - Demo videos (screen captures of a real terminal running the program): [Sprint-1 demo](docs/demo/sprint1-demo.mp4), [Sprint-2 demo](docs/demo/sprint2-demo.mp4)

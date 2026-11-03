@@ -141,22 +141,21 @@ def write(name, text):
 
 
 # ---------------------------------------------------------------- unit test report
-write("unit_test_report.md", f"""# Unit Test Report
+write("unit_test_report.md", f"""# Unit test report
 
 {head}
-**What was tested:** the scoring module (`src/score.c`) on its own, using `assert` in `tests/test_score.c`.
-**How to run:** `make test`
+These tests cover the scoring module (`src/score.c`) on its own. They are in `tests/test_score.c` and use `assert`. Run them with `make test`.
 
-**Result: {passed} of {passed} unit tests passed.**
+Result: all {passed} tests passed.
 
-| Test | Checks | Requirement |
+| Test | What it checks | Requirement |
 |---|---|---|
-| 1 to 4 | 3, 1, 5 and 0 of 5 correct: score, counts, percentage, Pass/Fail | REQ-7, REQ-8, REQ-9 |
-| 5 | `show_result` with a NULL result does not crash | REQ-11, NFR-4 |
-| 6, 7 | Pass mark boundary: 4 of 10 (40%) is Pass, 3 of 10 (30%) is Fail | REQ-10 |
-| 8 | Invalid arguments (NULL, zero questions) give an all-zero result | NFR-4 |
+| 1 to 4 | 3, 1, 5 and 0 answers right out of 5: score, counts, percentage, Pass or Fail | REQ-7, REQ-8, REQ-9 |
+| 5 | `show_result` given a NULL result does not crash | REQ-11, NFR-4 |
+| 6, 7 | The pass mark: 4 of 10 (40%) passes, 3 of 10 (30%) fails | REQ-10 |
+| 8 | Bad arguments (NULL, no questions) give an all-zero result | NFR-4 |
 
-## Raw output of `make test`
+Output of `make test`:
 
 ```
 {unit_out.strip()}
@@ -165,19 +164,18 @@ write("unit_test_report.md", f"""# Unit Test Report
 
 # ---------------------------------------------------------------- system validation report
 tbl = "\n".join(f"| {tc} | {TC_REQ.get(tc, '')} | {desc} | {'Pass' if st == 'PASS' else '**FAIL**'} |" for st, tc, desc in rows)
-write("system_validation_report.md", f"""# System Validation Report
+write("system_validation_report.md", f"""# System validation report
 
 {head}
-**What was tested:** the whole program, by sending input to the compiled `quiz` and checking the output against the SRS.
-**How to run:** `make` and then `bash tests/run_system_tests.sh`
+These tests run the whole program. The script sends input to `quiz` and checks the output against the SRS. Build with `make`, then run `bash tests/run_system_tests.sh`.
 
-**Result: {summary.group(1)} test cases passed, {summary.group(2)} failed.** The test cases are defined in `docs/TEST_PLAN.md` (section 13).
+Result: {summary.group(1)} test cases passed, {summary.group(2)} failed. The test cases are described in section 13 of `docs/TEST_PLAN.md`.
 
 | Test case | Requirement(s) | Check | Result |
 |---|---|---|---|
 {tbl}
 
-## Raw output
+Output of the script:
 
 ```
 {sys_out.strip()}
@@ -193,7 +191,7 @@ def tot(res, key_p, key_n):
 
 
 def lines_table(res):
-    out = ["| File | Lines | Lines executed |", "|---|---|---|"]
+    out = ["| File | Lines | Lines run |", "|---|---|---|"]
     for f, v in res.items():
         out.append(f"| `{f}` | {v['ln']} | {v['lp']:.1f}% |")
     if len(res) > 1:
@@ -203,7 +201,7 @@ def lines_table(res):
 
 
 def branch_table(res):
-    out = ["| File | Branches | Branches executed | Taken at least once |", "|---|---|---|---|"]
+    out = ["| File | Branches | Reached | Taken |", "|---|---|---|---|"]
     for f, v in res.items():
         be = "n/a" if v["bp"] is None else f"{v['bp']:.1f}%"
         bt = "n/a" if v["tp"] is None else f"{v['tp']:.1f}%"
@@ -227,46 +225,46 @@ def uncovered(res, kind):
     return "\n".join(items) if items else "None."
 
 
-write("code_coverage_report.md", f"""# Code Coverage Report (line coverage)
+write("code_coverage_report.md", f"""# Code coverage report (lines)
 
 {head}
-Measured with `gcc --coverage` and `gcov`. The program was built with coverage on and run in two ways.
+Measured with `gcc --coverage` and `gcov`. I built the program with coverage turned on and ran it two ways.
 
-## 1. Unit tests (`tests/test_score.c`, scoring module only)
+## Unit tests (scoring module only)
 
 {lines_table(unit_cov)}
 
-## 2. System tests (the 20 scripted test cases run against the whole program)
+## System tests (the 20 test cases against the whole program)
 
 {lines_table(sys_cov)}
 
-### Lines not executed by the system tests
+### Lines the system tests did not run
 
 {uncovered(sys_cov, "lines")}
 
-The system tests drive the real program from the keyboard. The lines listed above are mostly error paths and rare input cases (very long input lines, end of input at a prompt, a missing question file, an empty or damaged results file). Several of them are covered by the unit tests or by the manual checks in the Test Plan.
+Most of these are error paths and unusual input: very long lines, input ending at a prompt, a missing question file, an empty or damaged results file. A few are covered by the unit tests instead.
 
-**How to reproduce:** `python tests/make_reports.py`
+To regenerate this report: `python tests/make_reports.py`
 """)
 
-write("branch_coverage_report.md", f"""# Branch Coverage Report
+write("branch_coverage_report.md", f"""# Branch coverage report
 
 {head}
-Measured with `gcc --coverage` and `gcov -b`. "Branches executed" is the share of branches that were reached at all. "Taken at least once" is the share that were followed in at least one direction.
+Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches the tests got to. "Taken" is the share that were followed in at least one direction.
 
-## 1. Unit tests (`tests/test_score.c`, scoring module only)
+## Unit tests (scoring module only)
 
 {branch_table(unit_cov)}
 
-## 2. System tests (the 20 scripted test cases run against the whole program)
+## System tests (the 20 test cases against the whole program)
 
 {branch_table(sys_cov)}
 
-### Branches never taken by the system tests
+### Branches the system tests never took
 
 {uncovered(sys_cov, "branches")}
 
-**How to reproduce:** `python tests/make_reports.py`
+To regenerate this report: `python tests/make_reports.py`
 """)
 
 print("unit tests passed:", passed)

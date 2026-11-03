@@ -1,18 +1,18 @@
-# Code Coverage Report (line coverage)
+# Code coverage report (lines)
 
-Date: 2026-11-03  |  Commit: `3f4a53c`  |  Project: Online Quiz System
+Date: 2026-11-03  |  Commit: `be1bfab`  |  Project: Online Quiz System
 
-Measured with `gcc --coverage` and `gcov`. The program was built with coverage on and run in two ways.
+Measured with `gcc --coverage` and `gcov`. I built the program with coverage turned on and ran it two ways.
 
-## 1. Unit tests (`tests/test_score.c`, scoring module only)
+## Unit tests (scoring module only)
 
-| File | Lines | Lines executed |
+| File | Lines | Lines run |
 |---|---|---|
 | `src/score.c` | 23 | 100.0% |
 
-## 2. System tests (the 20 scripted test cases run against the whole program)
+## System tests (the 20 test cases against the whole program)
 
-| File | Lines | Lines executed |
+| File | Lines | Lines run |
 |---|---|---|
 | `src/main.c` | 72 | 88.9% |
 | `src/quiz.c` | 78 | 71.8% |
@@ -20,7 +20,7 @@ Measured with `gcc --coverage` and `gcov`. The program was built with coverage o
 | `src/storage.c` | 60 | 80.0% |
 | **All source files** | 233 | **80.7%** |
 
-### Lines not executed by the system tests
+### Lines the system tests did not run
 
 - `src/main.c` line 66: `return -1;`
 - `src/main.c` line 70: `} else if (!feof(stdin)) {`
@@ -68,6 +68,6 @@ Measured with `gcc --coverage` and `gcov`. The program was built with coverage o
 - `src/storage.c` line 122: `printf("\nNo results yet. Play a quiz first.\n");`
 - `src/storage.c` line 123: `return;`
 
-The system tests drive the real program from the keyboard. The lines listed above are mostly error paths and rare input cases (very long input lines, end of input at a prompt, a missing question file, an empty or damaged results file). Several of them are covered by the unit tests or by the manual checks in the Test Plan.
+Most of these are error paths and unusual input: very long lines, input ending at a prompt, a missing question file, an empty or damaged results file. A few are covered by the unit tests instead.
 
-**How to reproduce:** `python tests/make_reports.py`
+To regenerate this report: `python tests/make_reports.py`

@@ -1,20 +1,19 @@
-# Unit Test Report
+# Unit test report
 
-Date: 2026-11-03  |  Commit: `3f4a53c`  |  Project: Online Quiz System
+Date: 2026-11-03  |  Commit: `be1bfab`  |  Project: Online Quiz System
 
-**What was tested:** the scoring module (`src/score.c`) on its own, using `assert` in `tests/test_score.c`.
-**How to run:** `make test`
+These tests cover the scoring module (`src/score.c`) on its own. They are in `tests/test_score.c` and use `assert`. Run them with `make test`.
 
-**Result: 8 of 8 unit tests passed.**
+Result: all 8 tests passed.
 
-| Test | Checks | Requirement |
+| Test | What it checks | Requirement |
 |---|---|---|
-| 1 to 4 | 3, 1, 5 and 0 of 5 correct: score, counts, percentage, Pass/Fail | REQ-7, REQ-8, REQ-9 |
-| 5 | `show_result` with a NULL result does not crash | REQ-11, NFR-4 |
-| 6, 7 | Pass mark boundary: 4 of 10 (40%) is Pass, 3 of 10 (30%) is Fail | REQ-10 |
-| 8 | Invalid arguments (NULL, zero questions) give an all-zero result | NFR-4 |
+| 1 to 4 | 3, 1, 5 and 0 answers right out of 5: score, counts, percentage, Pass or Fail | REQ-7, REQ-8, REQ-9 |
+| 5 | `show_result` given a NULL result does not crash | REQ-11, NFR-4 |
+| 6, 7 | The pass mark: 4 of 10 (40%) passes, 3 of 10 (30%) fails | REQ-10 |
+| 8 | Bad arguments (NULL, no questions) give an all-zero result | NFR-4 |
 
-## Raw output of `make test`
+Output of `make test`:
 
 ```
 gcc -Wall -std=c99 -Iinclude -MMD -MP -o tests/test_score tests/test_score.c src/score.c

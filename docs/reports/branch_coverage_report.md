@@ -1,18 +1,18 @@
-# Branch Coverage Report
+# Branch coverage report
 
-Date: 2026-11-03  |  Commit: `3f4a53c`  |  Project: Online Quiz System
+Date: 2026-11-03  |  Commit: `be1bfab`  |  Project: Online Quiz System
 
-Measured with `gcc --coverage` and `gcov -b`. "Branches executed" is the share of branches that were reached at all. "Taken at least once" is the share that were followed in at least one direction.
+Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches the tests got to. "Taken" is the share that were followed in at least one direction.
 
-## 1. Unit tests (`tests/test_score.c`, scoring module only)
+## Unit tests (scoring module only)
 
-| File | Branches | Branches executed | Taken at least once |
+| File | Branches | Reached | Taken |
 |---|---|---|---|
 | `src/score.c` | 14 | 100.0% | 100.0% |
 
-## 2. System tests (the 20 scripted test cases run against the whole program)
+## System tests (the 20 test cases against the whole program)
 
-| File | Branches | Branches executed | Taken at least once |
+| File | Branches | Reached | Taken |
 |---|---|---|---|
 | `src/main.c` | 60 | 90.0% | 68.3% |
 | `src/quiz.c` | 86 | 86.0% | 55.8% |
@@ -20,7 +20,7 @@ Measured with `gcc --coverage` and `gcov -b`. "Branches executed" is the share o
 | `src/storage.c` | 62 | 90.3% | 59.7% |
 | **All source files** | 222 | **89.2%** | **61.3%** |
 
-### Branches never taken by the system tests
+### Branches the system tests never took
 
 - `src/main.c` line 70
 - `src/main.c` line 72
@@ -31,4 +31,4 @@ Measured with `gcc --coverage` and `gcov -b`. "Branches executed" is the share o
 - `src/storage.c` line 58
 - `src/storage.c` line 59
 
-**How to reproduce:** `python tests/make_reports.py`
+To regenerate this report: `python tests/make_reports.py`
