@@ -1,11 +1,12 @@
 #!/bin/bash
 # System tests for the Online Quiz System (Test Plan section 13, TC-01 to TC-20).
-# Run from the repository root after building:  make && bash tests/run_system_tests.sh
+# Run from the repository root after building:  make && bash tests/run_system_tests.sh [path-of-make]
 # It sends input to the program, checks the output, and prints PASS or FAIL for each test case.
 
 cd "$(dirname "$0")/.." || exit 1
 if [ -x ./quiz.exe ]; then Q=./quiz.exe; elif [ -x ./quiz ]; then Q=./quiz; else echo "Build first: make"; exit 1; fi
-if command -v make >/dev/null 2>&1; then MAKE=make; else MAKE=mingw32-make; fi
+MAKE="${1:-}"   # optional: path of the make program, e.g.  bash tests/run_system_tests.sh C:/ucrt64/bin/mingw32-make.exe
+if [ -z "$MAKE" ]; then if command -v make >/dev/null 2>&1; then MAKE=make; else MAKE=mingw32-make; fi; fi
 
 pass=0; fail=0
 check() {   # check "TC-xx" "description" <command that succeeds when the test passes>
@@ -50,12 +51,12 @@ check TC-19 "score.c builds and runs on its own (make test)" t06
 
 # TC-09 name with a comma
 fresh; play '1\nTara,Bad\nA\nB\nC\nD\nA\n4\n' >/dev/null
-t09() { grep -qE '^Tara Bad,[0-9]+$' results.txt && [ "$(wc -l < results.txt)" = 1 ]; }
+t09() { tr -d '\r' < results.txt | grep -qE '^Tara Bad,[0-9]+$' && [ "$(wc -l < results.txt)" = 1 ]; }
 check TC-09 "comma in a name is replaced; one line per record" t09
 
 # TC-10 integration: full quiz saves Name,Score
 fresh; play '1\nAsha\nA\nB\nC\nD\nA\n4\n' >/dev/null
-t10() { grep -qE '^Asha,[0-9]+$' results.txt && [ "$(wc -l < results.txt)" = 1 ]; }
+t10() { tr -d '\r' < results.txt | grep -qE '^Asha,[0-9]+$' && [ "$(wc -l < results.txt)" = 1 ]; }
 check TC-10 "full quiz as Asha saves one Asha,<score> line" t10
 
 # TC-11 whole quiz
