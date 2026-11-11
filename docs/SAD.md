@@ -214,7 +214,7 @@ Each error is shown as one line starting with `Error:`, and then the program goe
 - One screen at a time; every screen ends with a prompt.
 - Menus are numbered; quiz answers are single letters A to D.
 - Every error starts with `Error:` and is followed by a new prompt.
-- No colour or cursor control, so it works in any terminal.
+- Optional colour (titles, menu numbers, errors, Pass/Fail, leaderboard top three) using plain ANSI codes. It is switched on only when the output is a terminal, and `NO_COLOR` turns it off, so piped output and the tests stay plain text.
 
 ```
 ===== Online Quiz System =====
