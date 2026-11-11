@@ -4,6 +4,7 @@
 #include "quiz.h"
 #include "score.h"
 #include "storage.h"
+#include "ui.h"
 
 #define MENU_MIN 1
 #define MENU_MAX 4
@@ -17,11 +18,11 @@
 /* Print the numbered main menu (REQ-1). */
 static void show_menu(void)
 {
-    printf("\n===== Online Quiz System =====\n");
-    printf("1. Start Quiz\n");
-    printf("2. View Leaderboard\n");
-    printf("3. Instructions\n");
-    printf("4. Exit\n");
+    printf("\n%s%s===== Online Quiz System =====%s\n", ui(UI_BOLD), ui(UI_CYAN), ui(UI_RESET));
+    printf("%s1.%s Start Quiz\n", ui(UI_YELLOW), ui(UI_RESET));
+    printf("%s2.%s View Leaderboard\n", ui(UI_YELLOW), ui(UI_RESET));
+    printf("%s3.%s Instructions\n", ui(UI_YELLOW), ui(UI_RESET));
+    printf("%s4.%s Exit\n", ui(UI_YELLOW), ui(UI_RESET));
 }
 
 /* Read one line and accept it only if it is a single integer that is a
@@ -33,7 +34,7 @@ static int read_menu_choice(void)
     char *end;
     long value;
 
-    printf("Enter your choice (%d-%d): ", MENU_MIN, MENU_MAX);
+    printf("%sEnter your choice (%d-%d): %s", ui(UI_BOLD), MENU_MIN, MENU_MAX, ui(UI_RESET));
     if (fgets(line, sizeof line, stdin) == NULL)
         return MENU_EOF;
 
@@ -86,7 +87,7 @@ static void start_quiz(void)
     Result result;
     int n;
 
-    printf("Enter your name: ");
+    printf("%sEnter your name: %s", ui(UI_BOLD), ui(UI_RESET));
     if (read_line(name, sizeof name) != 0)
         return;
     if (name[0] == '\0')
@@ -95,7 +96,7 @@ static void start_quiz(void)
     memset(answers, 0, sizeof answers);   /* unanswered stays 0 if the quiz ends early */
     n = load_questions(QUESTIONS_FILE, qs, MAX_QUESTIONS);
     if (n <= 0) {
-        printf("Error: could not load any questions.\n");
+        printf("%sError: could not load any questions.%s\n", ui(UI_RED), ui(UI_RESET));
         return;
     }
 
@@ -103,13 +104,13 @@ static void start_quiz(void)
     result = calculate_result(qs, answers, n);
     show_result(&result);
     if (save_result(name, &result) != 0)
-        printf("Error: could not save your result.\n");
+        printf("%sError: could not save your result.%s\n", ui(UI_RED), ui(UI_RESET));
 }
 
 /* Option 3: short instructions (REQ-4). */
 static void show_instructions(void)
 {
-    printf("\n--- Instructions ---\n");
+    printf("\n%s--- Instructions ---%s\n", ui(UI_BOLD), ui(UI_RESET));
     printf("1. Choose 'Start Quiz' and enter your name.\n");
     printf("2. Each question has four options: A, B, C and D.\n");
     printf("3. Type the letter of your answer and press Enter.\n");
@@ -127,8 +128,8 @@ int main(void)
 
         /* Invalid input only prints an error and loops (REQ-3). */
         if (choice == -1) {
-            printf("Error: please enter a number from %d to %d.\n",
-                   MENU_MIN, MENU_MAX);
+            printf("%sError: please enter a number from %d to %d.%s\n", ui(UI_RED),
+                   MENU_MIN, MENU_MAX, ui(UI_RESET));
             continue;
         }
 
@@ -143,6 +144,6 @@ int main(void)
 
     /* Clean exit (REQ-6): main.c keeps no files open (each feature opens and
      * closes its own), so just say goodbye and return from main. */
-    printf("\nThank you for playing. Goodbye!\n");
+    printf("\n%sThank you for playing. Goodbye!%s\n", ui(UI_GREEN), ui(UI_RESET));
     return 0;
 }

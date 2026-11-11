@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "quiz.h"
+#include "ui.h"
 
 #define ANSWER_LINE_LEN 64
 
@@ -147,21 +148,22 @@ void run_quiz(const Question qs[], int n, char answers[])
         answers[i] = 0;
 
     for (i = 0; i < n; i++) {
-        printf("\nQuestion %d of %d\n%s\n", i + 1, n, qs[i].text);
+        printf("\n%s%sQuestion %d of %d%s\n%s%s%s\n", ui(UI_BOLD), ui(UI_CYAN), i + 1, n, ui(UI_RESET),
+               ui(UI_BOLD), qs[i].text, ui(UI_RESET));
         for (k = 0; k < 4; k++)
-            printf("  %c) %s\n", 'A' + k, qs[i].options[k]);
+            printf("  %s%c)%s %s\n", ui(UI_YELLOW), 'A' + k, ui(UI_RESET), qs[i].options[k]);
 
         /* Keep asking until the answer is A, B, C or D (REQ-19). */
         ans = 0;
         while (ans == 0) {
-            printf("Your answer (A-D): ");
+            printf("%sYour answer (A-D): %s", ui(UI_BOLD), ui(UI_RESET));
             if (read_answer_line(line, sizeof line) != 0) {
                 printf("\n");
                 return;
             }
             ans = parse_answer(line);
             if (ans == 0)
-                printf("Error: please enter A, B, C or D.\n");
+                printf("%sError: please enter A, B, C or D.%s\n", ui(UI_RED), ui(UI_RESET));
         }
         answers[i] = ans;   /* record it, then show the next question (REQ-20, REQ-21) */
     }

@@ -6,6 +6,7 @@
  */
 
 #include "score.h"
+#include "ui.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -40,15 +41,16 @@ Result calculate_result(const Question qs[], const char answers[], int n)
 void show_result(const Result *r)
 {
     if (r == NULL) {
-        printf("Error: result is unavailable.\n");
+        printf("%sError: result is unavailable.%s\n", ui(UI_RED), ui(UI_RESET));
         return;
     }
 
-    printf("\n===== Quiz Results =====\n");
+    printf("\n%s%s===== Quiz Results =====%s\n", ui(UI_BOLD), ui(UI_CYAN), ui(UI_RESET));
     printf("Score: %d/%d\n", r->score, r->total);
     printf("Percentage: %.2f%%\n", r->percent);
     printf("Correct answers: %d\n", r->correct);
     printf("Incorrect answers: %d\n", r->incorrect);
-    printf("Result: %s\n", r->passed ? "Pass" : "Fail");
+    printf("Result: %s%s%s%s\n", ui(UI_BOLD), r->passed ? ui(UI_GREEN) : ui(UI_RED),
+           r->passed ? "Pass" : "Fail", ui(UI_RESET));
 }
 

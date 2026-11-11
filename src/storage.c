@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "storage.h"
+#include "ui.h"
 
 #define RESULTS_FILE "results.txt"
 #define MAX_ENTRIES  1000          /* more results than this are ignored */
@@ -87,6 +88,18 @@ static int parse_entry(const char *line, Entry *e)
     return 0;
 }
 
+/* Gold, silver and bronze colours for the first three places. */
+static const char *rank_colour(int index)
+{
+    if (index == 0)
+        return ui(UI_BOLD UI_YELLOW);
+    if (index == 1)
+        return ui(UI_BOLD);
+    if (index == 2)
+        return ui(UI_MAGENTA);
+    return "";
+}
+
 /* Reads results.txt and prints the entries from the highest score to the
    lowest. Entries with the same score keep the order they were saved in. */
 void show_leaderboard(void)
@@ -100,7 +113,7 @@ void show_leaderboard(void)
 
     fp = fopen(RESULTS_FILE, "r");
     if (fp == NULL) {
-        printf("\nNo results yet. Play a quiz first.\n");
+        printf("\n%sNo results yet. Play a quiz first.%s\n", ui(UI_YELLOW), ui(UI_RESET));
         return;
     }
 
@@ -119,12 +132,12 @@ void show_leaderboard(void)
     fclose(fp);
 
     if (count == 0) {
-        printf("\nNo results yet. Play a quiz first.\n");
+        printf("\n%sNo results yet. Play a quiz first.%s\n", ui(UI_YELLOW), ui(UI_RESET));
         return;
     }
 
-    printf("\n===== Leaderboard =====\n");
-    printf("%-5s %-30s %s\n", "Rank", "Name", "Score");
+    printf("\n%s%s===== Leaderboard =====%s\n", ui(UI_BOLD), ui(UI_CYAN), ui(UI_RESET));
+    printf("%s%-5s %-30s %s%s\n", ui(UI_BOLD), "Rank", "Name", "Score", ui(UI_RESET));
     for (j = 0; j < count; j++)
-        printf("%-5d %-30.30s %d\n", j + 1, list[j].name, list[j].score);
+        printf("%s%-5d %-30.30s %d%s\n", rank_colour(j), j + 1, list[j].name, list[j].score, ui(UI_RESET));
 }
