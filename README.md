@@ -25,7 +25,7 @@ make clean    # remove built files
 
 ## Project status
 
-Work in progress (Sprint-1).
+Both sprints are finished. All 32 user stories are done.
 
 | Part | Status |
 |---|---|
@@ -34,6 +34,7 @@ Work in progress (Sprint-1).
 | Saving results | Done |
 | Quiz questions and answers | Done |
 | Leaderboard | Done |
+| Terminal colours (optional) | Done |
 
 ## Folders
 
