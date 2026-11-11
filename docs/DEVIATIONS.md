@@ -21,6 +21,7 @@ This file lists where the final project differs from the SRS, SAD and Test Plan 
 | 4 | REQ-15: leaderboard sorted high to low | Equal scores keep the order they were saved in; at most 1000 results are read; lines in the wrong format are skipped | Needed a fixed rule for ties and for damaged files |
 | 5 | REQ-16: missing file handled | A missing, empty or unreadable `results.txt` shows "No results yet. Play a quiz first." | Short message, no crash (SEC-4) |
 | 6 | Terminal colours (`include/ui.h`) | Added at the end: colour on titles, menu numbers, errors, Pass/Fail and the top three leaderboard rows. Text is the same; colours switch off when output is piped or `NO_COLOR` is set | Easier to read; the demo videos were recorded before this and show the plain screens |
+| 7 | Sounds (`ui_sound` in `include/ui.h`) | A short beep after each answer and a different tone for Pass or Fail. Played only on a real terminal; `NO_SOUND` turns it off and piped output is silent | Feedback while moving to the next question |
 
 ## Changes in how the work was done
 

@@ -165,6 +165,7 @@ void run_quiz(const Question qs[], int n, char answers[])
             if (ans == 0)
                 printf("%sError: please enter A, B, C or D.%s\n", ui(UI_RED), ui(UI_RESET));
         }
+        ui_sound(UI_SOUND_NEXT);
         answers[i] = ans;   /* record it, then show the next question (REQ-20, REQ-21) */
     }
 }

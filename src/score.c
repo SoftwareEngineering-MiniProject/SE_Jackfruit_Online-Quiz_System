@@ -50,6 +50,7 @@ void show_result(const Result *r)
     printf("Percentage: %.2f%%\n", r->percent);
     printf("Correct answers: %d\n", r->correct);
     printf("Incorrect answers: %d\n", r->incorrect);
+    ui_sound(r->passed ? UI_SOUND_PASS : UI_SOUND_FAIL);
     printf("Result: %s%s%s%s\n", ui(UI_BOLD), r->passed ? ui(UI_GREEN) : ui(UI_RED),
            r->passed ? "Pass" : "Fail", ui(UI_RESET));
 }

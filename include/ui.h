@@ -7,6 +7,7 @@
    ui() returns an empty string, so the text is exactly the same as before.
    Set FORCE_COLOR=1 to switch colours on even when the output is piped. */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #ifdef _WIN32
@@ -61,6 +62,36 @@ static inline int ui_on(void)
 static inline const char *ui(const char *code)
 {
     return ui_on() ? code : "";
+}
+
+/* Optional sounds. Played only on a real terminal (never when piped, so the
+   tests stay silent) and not when NO_SOUND is set. Windows plays short tones;
+   other systems use the terminal bell. */
+#define UI_SOUND_NEXT 0
+#define UI_SOUND_PASS 1
+#define UI_SOUND_FAIL 2
+
+static inline void ui_sound(int kind)
+{
+    static int state = -1;
+
+    if (state < 0)
+        state = (getenv("NO_SOUND") == NULL && UI_ISATTY_STDOUT()) ? 1 : 0;
+    if (!state)
+        return;
+#ifdef _WIN32
+    if (kind == UI_SOUND_PASS) {
+        Beep(784, 90); Beep(988, 90); Beep(1319, 160);
+    } else if (kind == UI_SOUND_FAIL) {
+        Beep(392, 150); Beep(262, 250);
+    } else {
+        Beep(880, 60);
+    }
+#else
+    (void)kind;
+    putchar('');
+    fflush(stdout);
+#endif
 }
 
 #endif
