@@ -14,12 +14,13 @@ Written in C for the Software Engineering mini-project (Team Jackfruit).
 
 ## How to build and run
 
-You need `gcc` and `make` (on Windows, `mingw32-make`).
+You need `gcc`, `make` (on Windows, `mingw32-make`) and the SQLite library (`libsqlite3-dev` on Ubuntu, `mingw-w64-ucrt-x86_64-sqlite3` with MSYS2 on Windows).
 
 ```
 make          # build the program
 ./quiz        # run it (run from this folder, not from src/)
 make test     # run the scoring tests
+make db       # rebuild data/quiz.db from data/questions.sql (needs the sqlite3 tool)
 make clean    # remove built files
 ```
 
@@ -41,7 +42,7 @@ Both sprints are finished. All 32 user stories are done.
 | Path | What is in it |
 |---|---|
 | `src/`, `include/` | The C code |
-| `data/questions.txt` | The question bank |
+| `data/quiz.db`, `data/questions.sql` | The question bank (SQLite database and the script that builds it) |
 | `tests/` | Unit tests |
 | `docs/` | Design document, test plan and diagrams |
 | `SRS.md` | Software Requirements Specification |

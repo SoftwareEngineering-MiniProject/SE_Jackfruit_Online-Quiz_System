@@ -21,7 +21,7 @@
 ## 2. Test Items
 
 - Menu Controller (`src/main.c`) — Tejas
-- Quiz Engine (`src/quiz.c`, `data/questions.txt`) — Sanjana
+- Quiz Engine (`src/quiz.c`, `data/quiz.db`) — Sanjana
 - Scoring Module (`src/score.c`) — Vikas
 - Result Storage and Leaderboard (`src/storage.c`) — Vaishnavi
 - The integrated program (`quiz` / `quiz.exe`) built by the `Makefile` and GitHub Actions
@@ -47,9 +47,9 @@
 
 ## 4. Features Not to be Tested
 
-- Login, accounts and roles; network, web, database and GUI (out of scope in the SRS).
+- Login, accounts and roles; network, web, database server and GUI (out of scope in the SRS).
 - Several users at the same time (SRS constraint: single user).
-- The C standard library and the operating system (assumed correct).
+- The C standard library, the SQLite library and the operating system (assumed correct).
 - Leaderboards with more than 100 stored results.
 
 ---
@@ -86,7 +86,7 @@ Security testing covers the six security requirements in SRS Section 5.3.2. The 
 
 ## 6. Test Environment
 
-Windows 11 (MinGW GCC, PowerShell or Git Bash) and Ubuntu (GitHub Actions); GCC with `-Wall -std=c99` and GNU Make. Test data: `data/questions.txt` (5 questions) and sample `results.txt` files. Tests are run from the repository root.
+Windows 11 (MinGW GCC, PowerShell or Git Bash) and Ubuntu (GitHub Actions); GCC with `-Wall -std=c99` and GNU Make. Test data: `data/quiz.db` (5 questions) and sample `results.txt` files. Tests are run from the repository root.
 
 ---
 
@@ -191,7 +191,7 @@ Every requirement in SRS v1.1 appears in at least one test case.
 - Test cases designed: 20. Executed: 20. **Pass: 20. Fail: 0. Not run: 0.**
 - Requirement coverage by test cases: 100% of REQ-1 to REQ-22 and NFR-1 to NFR-5.
 - Unit test coverage of `score.c`: 100% of lines and 100% of branches (measured with `gcov`).
-- With the 20 system tests running the whole program, gcov shows 80.7% of lines run, 89.2% of branches reached and 61.3% taken. The ones that were missed are listed in the coverage reports.
+- With the 20 system tests running the whole program, gcov shows 83.2% of lines run, 91.6% of branches reached and 65.0% taken. The ones that were missed are listed in the coverage reports.
 - The four final reports are in `docs/reports/` (unit, system validation, code coverage, branch coverage). `python tests/make_reports.py` regenerates them.
 - NFR-1 (speed): a full quiz run took 127 ms and the leaderboard of 100 results took 80 ms, against a limit of 1 second (TC-15).
 - NFR-2 (security): SEC-1 to SEC-6 are checked by TC-05, TC-09, TC-14, TC-16, TC-17 and TC-18, and all pass.

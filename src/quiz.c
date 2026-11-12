@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sqlite3.h>
 #include "quiz.h"
 #include "ui.h"
 
@@ -24,75 +25,52 @@ static char parse_answer(const char *s)
     return (*s == '\0') ? c : 0;
 }
 
-/* Reads one line from the questions file into buf (size bytes). Strips \r\n
-   and discards any characters that do not fit, so the next read starts on a
-   fresh line and the fields never get out of step (NFR-4).
-   Returns 0 on success, -1 at end of file. */
-static int read_file_line(FILE *fp, char *buf, size_t size)
+/* Copies a text column into dest (size bytes). A NULL column becomes "" and
+   anything too long is cut, so the fields can never overflow (NFR-4). */
+static void copy_column(char *dest, size_t size, const unsigned char *src)
 {
-    size_t len;
-    int c;
-
-    if (fgets(buf, (int)size, fp) == NULL)
-        return -1;
-    len = strlen(buf);
-    if (len > 0 && buf[len - 1] == '\n') {
-        buf[--len] = '\0';
-    } else if (!feof(fp)) {
-        while ((c = fgetc(fp)) != '\n' && c != EOF)
-            ;
-    }
-    if (len > 0 && buf[len - 1] == '\r')
-        buf[len - 1] = '\0';
-    return 0;
+    if (src == NULL)
+        src = (const unsigned char *)"";
+    snprintf(dest, size, "%s", (const char *)src);
 }
 
-/* Loads up to max questions from path. Each question is 6 lines: the text,
-   four options and the correct letter (A-D). Blank lines between questions
-   are ignored, a question with a bad answer letter is skipped, and an
-   incomplete last question is dropped.
-   Returns the number of questions loaded, or -1 if the file cannot be
-   opened or the arguments are invalid (NFR-4). */
+/* Loads up to max questions from the SQLite database at path, table
+   "questions" (see data/questions.sql). A row with a bad answer letter is
+   skipped. Returns the number of questions loaded, or -1 if the database
+   cannot be opened or read, or the arguments are invalid (NFR-4). */
 int load_questions(const char *path, Question qs[], int max)
 {
-    FILE *fp;
-    char line[256];
+    sqlite3 *db = NULL;
+    sqlite3_stmt *stmt = NULL;
     int count = 0;
 
     if (path == NULL || qs == NULL || max <= 0)
         return -1;
 
-    fp = fopen(path, "r");
-    if (!fp)
+    if (sqlite3_open_v2(path, &db, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
+        sqlite3_close(db);
         return -1;
+    }
+    if (sqlite3_prepare_v2(db,
+            "SELECT text, option_a, option_b, option_c, option_d, correct "
+            "FROM questions ORDER BY id",
+            -1, &stmt, NULL) != SQLITE_OK) {
+        sqlite3_close(db);
+        return -1;
+    }
 
-    while (count < max) {
+    while (count < max && sqlite3_step(stmt) == SQLITE_ROW) {
         Question q;
+        char line[ANSWER_LINE_LEN];
         char letter;
         int i;
 
-        /* Skip blank lines between questions */
-        do {
-            if (read_file_line(fp, q.text, sizeof q.text) != 0) {
-                fclose(fp);
-                return count;
-            }
-        } while (q.text[0] == '\0');
+        copy_column(q.text, sizeof q.text, sqlite3_column_text(stmt, 0));
+        for (i = 0; i < 4; i++)
+            copy_column(q.options[i], sizeof q.options[i],
+                        sqlite3_column_text(stmt, 1 + i));
 
-        /* Read all 4 options */
-        for (i = 0; i < 4; i++) {
-            if (read_file_line(fp, q.options[i], sizeof q.options[i]) != 0) {
-                fclose(fp);
-                return count;          /* truncated last question: ignore it */
-            }
-        }
-
-        /* Read the correct option letter ('A'..'D') */
-        if (read_file_line(fp, line, sizeof line) != 0) {
-            fclose(fp);
-            return count;
-        }
-
+        copy_column(line, sizeof line, sqlite3_column_text(stmt, 5));
         letter = parse_answer(line);
         if (letter == 0) {
             fprintf(stderr,
@@ -102,10 +80,11 @@ int load_questions(const char *path, Question qs[], int max)
         }
 
         q.correct = letter;
-        qs[count++] = q;               /* only complete, valid questions are stored */
+        qs[count++] = q;               /* only valid questions are stored */
     }
 
-    fclose(fp);
+    sqlite3_finalize(stmt);
+    sqlite3_close(db);
     return count;
 }
 

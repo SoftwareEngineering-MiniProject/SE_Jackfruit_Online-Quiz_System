@@ -44,7 +44,7 @@ SRS (`SRS.md`), Test Plan (`docs/TEST_PLAN.md`), and the team task split with th
 
 ## 3. Architecture
 
-The goals are a small, readable program that four people can build at the same time (NFR-5) and that never crashes on bad input or a missing file (NFR-4). The constraints are plain C (C99) built with `gcc -Wall -std=c99` and no third-party libraries; console only, one user, no network and no database; data is saved only in local text files; and the shared function names and structs in `quiz.h`, `score.h` and `storage.h` are fixed so the modules can be built in parallel.
+The goals are a small, readable program that four people can build at the same time (NFR-5) and that never crashes on bad input or a missing file (NFR-4). The constraints are plain C (C99) built with `gcc -Wall -std=c99` and the SQLite library; console only, one user, no network and no database server; questions are kept in a local SQLite file and results in a local text file; and the shared function names and structs in `quiz.h`, `score.h` and `storage.h` are fixed so the modules can be built in parallel.
 
 ### 3.3 Component (UML) Diagram
 
@@ -57,7 +57,7 @@ The goals are a small, readable program that four people can build at the same t
 | Component | Files | What it does | Functions it offers | Owner |
 |---|---|---|---|---|
 | Menu Controller | `src/main.c` | Shows the menu, checks the menu choice, asks for the player name, calls the chosen feature, shows instructions, exits cleanly | none (entry point) | Tejas |
-| Quiz Engine | `src/quiz.c`, `include/quiz.h` | Loads the question bank (`data/questions.txt`), shows one question at a time, checks and records each answer | **IQuiz**: `load_questions`, `run_quiz` | Sanjana |
+| Quiz Engine | `src/quiz.c`, `include/quiz.h` | Loads the question bank (`data/quiz.db`), shows one question at a time, checks and records each answer | **IQuiz**: `load_questions`, `run_quiz` | Sanjana |
 | Scoring Module | `src/score.c`, `include/score.h` | Compares answers with the correct options, counts correct and incorrect answers, works out the percentage and Pass/Fail (40%), shows the result screen | **IScore**: `calculate_result`, `show_result` | Vikas |
 | Result Storage and Leaderboard | `src/storage.c`, `include/storage.h` | Adds `Name,Score` to `results.txt`, reads the results back, shows the leaderboard from high score to low | **IStorage**: `save_result`, `show_leaderboard` | Vaishnavi |
 
@@ -71,22 +71,22 @@ The only link between modules is the two shared data types: `score.h` includes `
 |---|---|---|
 | Presentation and control | `main.c` | Talks to the user and calls the layers below; has no scoring or file code |
 | Domain | `quiz.c`, `score.c` | Quiz rules and scoring; knows nothing about the menu |
-| Data access | `storage.c`, the two text files | The only code that reads or writes `results.txt` |
+| Data access | `quiz.c` (reads `data/quiz.db`), `storage.c` (reads and writes `results.txt`) | The only code that reads or writes `results.txt` |
 
 **Rationale.** The program has one user, runs as one process, and has three clear parts, which match how the team shares the work. Layers give each owner their own files (so pull requests do not clash), let each module be tested alone (`tests/test_score.c` uses only `score.c`), and keep file-format details out of the menu code.
 
-**Alternatives rejected.** Client-server or microservices (there is no network and no second user), one big `main.c` (four people would edit one file and nothing could be tested alone), and a database (the SRS says no database and a text file is enough for a short leaderboard).
+**Alternatives rejected.** Client-server or microservices (there is no network and no second user), one big `main.c` (four people would edit one file and nothing could be tested alone), and a database server (a single local SQLite file is enough, and the results are a short list kept in a text file).
 
 **Key design decisions**
-- Text files for questions and results: no extra software is needed and a person can read them.
+- Questions in a local SQLite database, results in a text file: SQLite needs no server, questions are added with a normal SQL `INSERT`, and the results file stays readable.
 - Shared function names and structs are fixed, so a module can be built before the modules it depends on exist.
 - Fixed-size arrays created by the caller and no dynamic memory, so there are no memory leaks (the question limit is `MAX_QUESTIONS`, 100).
 
 ### 3.6 Technology Stack and Data Stores
 
-- **Language and build:** C (C99), GCC and `make` (`make` builds `quiz`, `make test` runs the score tests).
+- **Language and build:** C (C99), GCC and `make` (`make` builds `quiz` and links the SQLite library, `make test` runs the score tests, `make db` rebuilds the question database from `data/questions.sql`).
 - **Version control and CI:** Git and GitHub; a GitHub Actions workflow runs `make` on every push and pull request.
-- **Question bank:** `data/questions.txt`. For each question: one line of text, four option lines, then one line with the correct letter A to D.
+- **Question bank:** SQLite database `data/quiz.db`, table `questions` (`id`, `text`, `option_a` to `option_d`, `correct` = A to D). It is built from the readable script `data/questions.sql`.
 - **Results store:** `results.txt`. One `Name,Score` line per attempt, appended.
 
 ### 3.7 Risks and Mitigations
@@ -176,16 +176,11 @@ All interfaces are C functions declared in the header files. There is no network
 | `int save_result(const char *name, const Result *r)` | IStorage (`storage.h`) | Appends one `Name,Score` line to `results.txt`; commas and new lines in the name become spaces (SEC-2) | 0 on success, -1 on error | NULL argument or file problem: -1, prints nothing |
 | `void show_leaderboard(void)` | IStorage (`storage.h`) | Reads `results.txt` and prints the entries from highest to lowest score | nothing | File missing or unreadable: short "no results yet" message; bad lines are skipped |
 
-**File formats**
+**Data formats**
 
 ```
-questions.txt   (repeated per question)
-<question text>
-<option A>
-<option B>
-<option C>
-<option D>
-<correct letter A-D>
+quiz.db, table questions   (one row per question)
+id | text | option_a | option_b | option_c | option_d | correct (A-D)
 
 results.txt     (one per attempt)
 <name>,<score>

@@ -1,6 +1,6 @@
 # Unit test report
 
-Date: 2026-11-03  |  Commit: `be1bfab`  |  Project: Online Quiz System
+Date: 2026-11-12  |  Commit: `bd94a81`  |  Project: Online Quiz System
 
 These tests cover the scoring module (`src/score.c`) on its own. They are in `tests/test_score.c` and use `assert`. Run them with `make test`.
 

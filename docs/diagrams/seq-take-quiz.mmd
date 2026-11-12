@@ -4,7 +4,7 @@ sequenceDiagram
   participant Q as Quiz Engine (quiz.c)
   participant S as Scoring (score.c)
   participant R as Storage (storage.c)
-  participant QF as questions.txt
+  participant QF as quiz.db (SQLite)
   participant RF as results.txt
 
   U->>M: choose 1 (Start Quiz)

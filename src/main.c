@@ -11,7 +11,7 @@
 #define MENU_EXIT 4
 #define MENU_EOF (-2)      /* returned when input ends (Ctrl+D / Ctrl+Z) */
 
-#define QUESTIONS_FILE  "data/questions.txt"
+#define QUESTIONS_FILE  "data/quiz.db"
 #define MAX_QUESTIONS   100
 #define PLAYER_NAME_LEN 64
 

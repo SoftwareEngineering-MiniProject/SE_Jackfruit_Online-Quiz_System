@@ -88,7 +88,7 @@ try:
             out, rc = run(["gcc", "-std=c99", "-O0", "-Iinclude", "--coverage", "-c", s, "-o", o], tmp)
             need(rc == 0, "compile failed\n" + out)
             objs.append(o)
-        out, rc = run(["gcc", "--coverage", "-o", exe] + objs, tmp)
+        out, rc = run(["gcc", "--coverage", "-o", exe] + objs + ["-lsqlite3"], tmp)
         need(rc == 0, "link failed\n" + out)
 
     def gcov(objdir, sources):

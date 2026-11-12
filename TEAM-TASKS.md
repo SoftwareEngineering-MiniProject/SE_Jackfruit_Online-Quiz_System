@@ -26,7 +26,7 @@ The program is in plain C. Each person owns their own files, and nobody edits so
 | `include/quiz.h`, `src/quiz.c` | Sanjana | `Question` struct, loading questions, running the quiz |
 | `include/score.h`, `src/score.c` | Vikas | `Result` struct, scoring, percentage, Pass/Fail, result screen |
 | `include/storage.h`, `src/storage.c` | Vaishnavi | Saving to `results.txt`, reading it back, leaderboard |
-| `data/questions.txt` | Sanjana | The question bank |
+| `data/quiz.db`, `data/questions.sql` | Sanjana | The question bank (SQLite) |
 | `Makefile`, `.github/workflows/` | Tejas | Build and GitHub Actions |
 
 **Shared functions:** main.c calls these, so keep the names and signatures exactly like this.
@@ -60,7 +60,7 @@ void show_leaderboard(void);                            /* reads results.txt, so
 ### Sanjana (SanjanaM-28): Quiz Engine, SRS 4.2
 
 **Sprint-1**
-- REQ-17: load MCQs from `data/questions.txt`, each with exactly one correct answer (3 pts)
+- REQ-17: load MCQs from the SQLite database `data/quiz.db`, each with exactly one correct answer (3 pts)
 - REQ-18: show one question at a time with its options (2 pts)
 - REQ-19: accept the answer and reject anything that isn't a valid option (2 pts)
 - REQ-20: record the answer before moving on (1 pt)

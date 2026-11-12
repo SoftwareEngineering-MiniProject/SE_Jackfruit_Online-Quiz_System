@@ -70,7 +70,7 @@ This document specifies the software requirements for the Online Quiz System, Ve
 This SRS is for: the development team (Tejas, Sanjana, Vikas, Vaishnavi), who use it as the common reference for implementation and testing; the course faculty and evaluators, who use it to check the quality and completeness of the requirements for Jackfruit Phase 1; and team members acting as testers, who write test cases from the functional requirements in Section 4. A new reader should start with Section 2 (Overall Description), which explains the product and its environment before the detailed requirements in Section 4.
 
 ### 1.3 Product Scope
-The Online Quiz System is a small, offline, console-based quiz program. A user attempts a set of multiple-choice questions and gets a score at the end. It replaces paper-based quizzes with a quick digital version, and it shows the team's understanding of core C/C++ concepts (control flow, functions, file handling) and of the software engineering process, as required for the Level 3 mini-project (UE24CS341A). The scope is kept small (Easy difficulty tier per the project problem statement): one quiz taker per session, a fixed or file-based question bank, instant scoring, and a simple leaderboard of past results. Networked multiplayer quizzes, a graphical interface, a web server, a database, and user accounts or login are out of scope for this phase.
+The Online Quiz System is a small, offline, console-based quiz program. A user attempts a set of multiple-choice questions and gets a score at the end. It replaces paper-based quizzes with a quick digital version, and it shows the team's understanding of core C/C++ concepts (control flow, functions, file handling) and of the software engineering process, as required for the Level 3 mini-project (UE24CS341A). The scope is kept small (Easy difficulty tier per the project problem statement): one quiz taker per session, a question bank stored in a local SQLite database, instant scoring, and a simple leaderboard of past results. Networked multiplayer quizzes, a graphical interface, a web server, a database server, and user accounts or login are out of scope for this phase.
 
 ### 1.4 References
 - PES University, Dept. of CSE – "Jackfruit – Software Engineering Project Guidelines 2026" (UE24CS341A).
@@ -84,7 +84,7 @@ The Online Quiz System is a small, offline, console-based quiz program. A user a
 <!-- OWNER: Vikas -->
 
 ### 2.1 Product Perspective
-The Online Quiz System is a new, standalone console application. It is not an upgrade of an existing system and is not part of a larger product. It runs on a single machine as one C/C++ program, with no client-server split, no backend and no database. The flow is: User ↔ Console Program ↔ (optional) local question and result files. 
+The Online Quiz System is a new, standalone console application. It is not an upgrade of an existing system and is not part of a larger product. It runs on a single machine as one C/C++ program, with no client-server split and no backend. The flow is: User ↔ Console Program ↔ local question database (SQLite file) and results file. 
 
 ### 2.2 Product Functions
 At a high level, the system shall:
@@ -107,20 +107,20 @@ There is no administrator role, login or web interface in this version. The ques
 ### 2.4 Operating Environment
 - **Client/runtime:** A terminal or console window (Windows Command Prompt/PowerShell, or a Linux/macOS terminal).
 - **Language and compiler:** C/C++, compiled with a standard compiler such as GCC/g++ (or Turbo C++, if that is the toolchain specified by the course).
-- **Storage:** No database is used. Results are saved in simple local text files using the standard C/C++ file functions (see Section 4.4).
+- **Storage:** The question bank is kept in a local SQLite database file (`data/quiz.db`), read through the SQLite C library. Results are saved in a simple local text file using the standard C/C++ file functions (see Section 4.4).
 - **Network:** None required — the application runs fully offline.
 
 ### 2.5 Design and Implementation Constraints
 - The application must run entirely within a console/terminal — no graphical user interface (GUI) is in scope for this version.
 - The system is single-user, single-session — no concurrent users and no multiplayer functionality.
-- No web page, server or database is used; data is saved in local text files only.
+- No web page or database server is used; the questions are in one local SQLite file and the results are in a local text file.
 - No login/authentication or administrator role is included in this version.
 - The question bank size is limited and appropriate for a mini-project (a small, fixed or file-loaded set of multiple-choice questions).
 - Git and GitHub are used for version control; individual commits are checked as evidence of each team member's contribution.
 
 ### 2.6 Assumptions and Dependencies
 - The user has access to a working C/C++ compiler and a terminal to run the compiled program.
-- The standard C/C++ library (console I/O, and file I/O if used) is available on the target machine — no third-party libraries are required.
+- The standard C/C++ library (console I/O, and file I/O if used) is available on the target machine. The SQLite library (`libsqlite3`) is needed to build and run the program.
 - The question bank is agreed and prepared by the team before implementation, and each question is assumed to have exactly one correct option.
 - The system needs no external service or network connection. Only the compiled program is needed.
 
@@ -138,7 +138,7 @@ There is no administrator role, login or web interface in this version. The ques
 
 ### 3.2 Software Interfaces
 - The Online Quiz System shall run as a C/C++ console application using a standard C/C++ compiler and shall operate through a terminal or console window.
-- The question bank shall contain multiple-choice questions, with each question having four answer options and exactly one correct option. The question bank shall be maintained locally by the team and shall not require an external database or web service.
+- The question bank shall contain multiple-choice questions, with each question having four answer options and exactly one correct option. The question bank shall be stored in a local SQLite database file (table `questions`) that is maintained by the team and shall not require a database server or web service.
 - The system shall use a local text file named results.txt to store completed quiz results. Each stored record shall contain the player's name and final score. The stored results shall be read back when the user views the leaderboard.
 
 ### 3.3 Communications Interfaces
@@ -157,7 +157,7 @@ There is no administrator role, login or web interface in this version. The ques
 
 ![UML use case diagram of the Online Quiz System](docs/diagrams/use-case.png)
 
-The only person using the system is the **Quiz Taker**. The question bank (`questions.txt`) and the results file (`results.txt`) are shown as secondary actors because the system reads or writes them. Start Quiz includes answering questions, calculating the score, viewing the result and saving the result.
+The only person using the system is the **Quiz Taker**. The question bank (the SQLite database `quiz.db`) and the results file (`results.txt`) are shown as secondary actors because the system reads or writes them. Start Quiz includes answering questions, calculating the score, viewing the result and saving the result.
 
 | ID | Use Case | Actor | Description | Related Requirements |
 |---|---|---|---|---|

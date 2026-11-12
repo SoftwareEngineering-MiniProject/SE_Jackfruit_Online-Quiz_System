@@ -60,7 +60,7 @@ for t in (u_ans, u_score, u_show, u_save):
             ha="center", fontsize=8, style="italic")
 
 # secondary actors (files)
-for x, y, label in [(9.95, 6.0, "Question Bank\n(questions.txt)"),
+for x, y, label in [(9.95, 6.0, "Question Bank\n(quiz.db)"),
                     (9.95, 2.6, "Results File\n(results.txt)")]:
     ax.add_patch(Rectangle((x - 0.9, y - 0.4), 1.8, 0.8, fc="#fff7e6", ec="black", lw=1.5))
     ax.text(x, y, label, ha="center", va="center", fontsize=9.5)

@@ -1,6 +1,6 @@
 # Branch coverage report
 
-Date: 2026-11-03  |  Commit: `be1bfab`  |  Project: Online Quiz System
+Date: 2026-11-12  |  Commit: `bd94a81`  |  Project: Online Quiz System
 
 Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches the tests got to. "Taken" is the share that were followed in at least one direction.
 
@@ -8,27 +8,25 @@ Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches
 
 | File | Branches | Reached | Taken |
 |---|---|---|---|
-| `src/score.c` | 14 | 100.0% | 100.0% |
+| `src/score.c` | 18 | 100.0% | 100.0% |
 
 ## System tests (the 20 test cases against the whole program)
 
 | File | Branches | Reached | Taken |
 |---|---|---|---|
 | `src/main.c` | 60 | 90.0% | 68.3% |
-| `src/quiz.c` | 86 | 86.0% | 55.8% |
-| `src/score.c` | 14 | 100.0% | 71.4% |
-| `src/storage.c` | 62 | 90.3% | 59.7% |
-| **All source files** | 222 | **89.2%** | **61.3%** |
+| `src/quiz.c` | 68 | 91.2% | 60.3% |
+| `src/score.c` | 18 | 100.0% | 77.8% |
+| `src/storage.c` | 68 | 91.2% | 63.2% |
+| **All source files** | 214 | **91.6%** | **65.0%** |
 
 ### Branches the system tests never took
 
-- `src/main.c` line 70
-- `src/main.c` line 72
-- `src/quiz.c` line 40
-- `src/quiz.c` line 41
-- `src/quiz.c` line 124
-- `src/quiz.c` line 125
-- `src/storage.c` line 58
+- `src/main.c` line 71
+- `src/main.c` line 73
+- `src/quiz.c` line 104
+- `src/quiz.c` line 105
 - `src/storage.c` line 59
+- `src/storage.c` line 60
 
 To regenerate this report: `python tests/make_reports.py`
