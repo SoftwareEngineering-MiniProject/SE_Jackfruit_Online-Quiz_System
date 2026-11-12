@@ -11,6 +11,7 @@ This file lists where the final project differs from the SRS, SAD and Test Plan 
 | 3 | The Test Plan results were updated after each sprint: 18 of 20 passed on 12-Oct (leaderboard not built yet), 20 of 20 passed on 27-Oct | Test results are recorded as the code is finished |
 | 4 | GitHub issues were rewritten as user stories ("As a ..., I want ..., so that ...") and grouped under 6 epics; the repo and board moved to the organisation `SoftwareEngineering-MiniProject` | Instructor review of the checkpoint |
 | 5 | The question bank moved from `data/questions.txt` to a SQLite database (`data/quiz.db`, built from `data/questions.sql`). The SRS, SAD, Test Plan, README and diagrams now say so; results stay in `results.txt` | A database keeps the questions as proper data and new questions are added with a normal SQL `INSERT`. This replaces the earlier "no database" decision |
+| 6 | The question bank now has 25 questions and each quiz asks 10 of them at random without repeats (REQ-17 updated). Two test cases were added (TC-21, TC-22). The tests set `QUIZ_ORDERED=1` and `QUIZ_COUNT=5` so their scores stay predictable | Different questions on every attempt; the system tests need fixed questions |
 
 ## Changes in the program compared with the documents
 

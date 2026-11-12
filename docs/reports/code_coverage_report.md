@@ -1,6 +1,6 @@
 # Code coverage report (lines)
 
-Date: 2026-11-12  |  Commit: `bd94a81`  |  Project: Online Quiz System
+Date: 2026-11-12  |  Commit: `e806d69`  |  Project: Online Quiz System
 
 Measured with `gcc --coverage` and `gcov`. I built the program with coverage turned on and ran it two ways.
 
@@ -10,43 +10,41 @@ Measured with `gcc --coverage` and `gcov`. I built the program with coverage tur
 |---|---|---|
 | `src/score.c` | 25 | 100.0% |
 
-## System tests (the 20 test cases against the whole program)
+## System tests (the 22 test cases against the whole program)
 
 | File | Lines | Lines run |
 |---|---|---|
-| `src/main.c` | 72 | 88.9% |
-| `src/quiz.c` | 73 | 76.7% |
+| `src/main.c` | 76 | 89.5% |
+| `src/quiz.c` | 85 | 82.3% |
 | `src/score.c` | 25 | 88.0% |
 | `src/storage.c` | 68 | 82.3% |
-| **All source files** | 238 | **83.2%** |
+| **All source files** | 254 | **85.0%** |
 
 ### Lines the system tests did not run
 
-- `src/main.c` line 67: `return -1;`
-- `src/main.c` line 71: `} else if (!feof(stdin)) {`
-- `src/main.c` line 73: `while ((c = getchar()) != '\n' && c != EOF)`
-- `src/main.c` line 77: `buf[--len] = '\0';`
-- `src/main.c` line 92: `return;`
-- `src/main.c` line 94: `strcpy(name, "Player");`
-- `src/main.c` line 99: `printf("%sError: could not load any questions.%s\n", ui(UI_RED), ui(UI_RESET));`
-- `src/main.c` line 100: `return;`
+- `src/main.c` line 76: `return -1;`
+- `src/main.c` line 80: `} else if (!feof(stdin)) {`
+- `src/main.c` line 82: `while ((c = getchar()) != '\n' && c != EOF)`
+- `src/main.c` line 86: `buf[--len] = '\0';`
+- `src/main.c` line 101: `return;`
+- `src/main.c` line 103: `strcpy(name, "Player");`
+- `src/main.c` line 108: `printf("%sError: could not load any questions.%s\n", ui(UI_RED), ui(UI_RESET));`
+- `src/main.c` line 109: `return;`
 - `src/quiz.c` line 18: `s++;`
 - `src/quiz.c` line 24: `s++;`
-- `src/quiz.c` line 33: `src = (const unsigned char *)"";`
-- `src/quiz.c` line 48: `return -1;`
-- `src/quiz.c` line 51: `sqlite3_close(db);`
-- `src/quiz.c` line 52: `return -1;`
-- `src/quiz.c` line 58: `sqlite3_close(db);`
-- `src/quiz.c` line 59: `return -1;`
-- `src/quiz.c` line 76: `fprintf(stderr,`
-- `src/quiz.c` line 79: `continue;`
-- `src/quiz.c` line 100: `return -1;`
-- `src/quiz.c` line 104: `} else if (!feof(stdin)) {`
-- `src/quiz.c` line 105: `while ((c = getchar()) != '\n' && c != EOF)`
-- `src/quiz.c` line 109: `buf[len - 1] = '\0';`
-- `src/quiz.c` line 123: `return;`
-- `src/quiz.c` line 140: `printf("\n");`
-- `src/quiz.c` line 141: `return;`
+- `src/quiz.c` line 35: `return 0;`
+- `src/quiz.c` line 37: `count = n;`
+- `src/quiz.c` line 55: `src = (const unsigned char *)"";`
+- `src/quiz.c` line 70: `return -1;`
+- `src/quiz.c` line 73: `sqlite3_close(db);`
+- `src/quiz.c` line 74: `return -1;`
+- `src/quiz.c` line 80: `sqlite3_close(db);`
+- `src/quiz.c` line 81: `return -1;`
+- `src/quiz.c` line 98: `fprintf(stderr,`
+- `src/quiz.c` line 101: `continue;`
+- `src/quiz.c` line 126: `} else if (!feof(stdin)) {`
+- `src/quiz.c` line 127: `while ((c = getchar()) != '\n' && c != EOF)`
+- `src/quiz.c` line 131: `buf[len - 1] = '\0';`
 - `src/score.c` line 22: `return r;`
 - `src/score.c` line 44: `printf("%sError: result is unavailable.%s\n", ui(UI_RED), ui(UI_RESET));`
 - `src/score.c` line 45: `return;`

@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#ifdef _WIN32
+#include <process.h>
+#define GET_PID() _getpid()
+#else
+#include <unistd.h>
+#define GET_PID() getpid()
+#endif
 #include "quiz.h"
 #include "score.h"
 #include "storage.h"
@@ -13,6 +21,7 @@
 
 #define QUESTIONS_FILE  "data/quiz.db"
 #define MAX_QUESTIONS   100
+#define QUIZ_LENGTH     10      /* questions asked in one quiz */
 #define PLAYER_NAME_LEN 64
 
 /* Print the numbered main menu (REQ-1). */
@@ -100,6 +109,15 @@ static void start_quiz(void)
         return;
     }
 
+    /* A random selection each time, so quizzes differ. The tests set
+     * QUIZ_ORDERED=1 (and QUIZ_COUNT) to get the same questions every run. */
+    {
+        const char *count_env = getenv("QUIZ_COUNT");
+        int count = (count_env != NULL) ? atoi(count_env) : QUIZ_LENGTH;
+
+        n = pick_questions(qs, n, count, getenv("QUIZ_ORDERED") == NULL);
+    }
+
     run_quiz(qs, n, answers);
     result = calculate_result(qs, answers, n);
     show_result(&result);
@@ -120,6 +138,9 @@ static void show_instructions(void)
 int main(void)
 {
     int choice;
+
+    /* time alone repeats if the program is started twice in one second */
+    srand((unsigned)time(NULL) ^ ((unsigned)GET_PID() << 16));
 
     /* Show the menu again after every feature until Exit (REQ-5). */
     do {

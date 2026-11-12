@@ -261,7 +261,7 @@ The Quiz Engine shall manage the delivery of multiple-choice questions during a 
 
 | ID | Requirement | Priority | Verification |
 |----|-------------|----------|---------------|
-| REQ-17 | The system shall load the available multiple-choice questions for the quiz, with each question having exactly one correct answer. | High | Functional test |
+| REQ-17 | The system shall load the available multiple-choice questions for the quiz, with each question having exactly one correct answer. Each quiz shall use 10 questions chosen at random from the bank, without repeats, so that different attempts get different questions. | High | Functional test |
 | REQ-18 | The system shall display one question at a time along with its available answer options. | High | Functional test |
 | REQ-19 | The system shall accept the user's selected answer and validate that the entered choice corresponds to one of the available answer options. | High | Functional test |
 | REQ-20 | The system shall record the user's selected answer before proceeding to the next question. | High | Functional test |

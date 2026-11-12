@@ -7,7 +7,7 @@ Written in C for the Software Engineering mini-project (Team Jackfruit).
 ## What it does
 
 - Main menu: Start Quiz, View Leaderboard, Instructions, Exit
-- Asks one question at a time (options A to D)
+- Asks 10 questions per quiz, one at a time (options A to D), picked at random from a bank of 25 so no question repeats and each attempt differs
 - Shows your score, percentage and Pass/Fail (pass mark is 40%)
 - Saves your name and score to `results.txt`
 - Shows the leaderboard from the highest score to the lowest

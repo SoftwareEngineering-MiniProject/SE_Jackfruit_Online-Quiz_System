@@ -35,7 +35,7 @@ TC_REQ = {
     "TC-05": "REQ-6, SEC-6", "TC-06": "REQ-7, REQ-8, REQ-9", "TC-07": "REQ-10", "TC-08": "REQ-11",
     "TC-09": "REQ-13, SEC-2", "TC-10": "REQ-12", "TC-11": "REQ-17 to REQ-22", "TC-12": "REQ-19",
     "TC-13": "REQ-14, REQ-15", "TC-14": "REQ-16, SEC-4", "TC-15": "NFR-1", "TC-16": "SEC-1, SEC-4",
-    "TC-17": "SEC-3, NFR-4", "TC-18": "SEC-5, SEC-3", "TC-19": "NFR-5", "TC-20": "NFR-3",
+    "TC-17": "SEC-3, NFR-4", "TC-18": "SEC-5, SEC-3", "TC-19": "NFR-5", "TC-20": "NFR-3", "TC-21": "REQ-17, REQ-22", "TC-22": "REQ-17",
 }
 
 
@@ -75,6 +75,7 @@ try:
     need(rc == 0, "build failed\n" + out[-500:])
     sys_out, rc = run([BASH, "tests/run_system_tests.sh", MAKE_PATH], tmp)
     rows = re.findall(r"^(PASS|FAIL)\s+(TC-\d+)\s+(.*)$", sys_out, re.M)
+    n_sys = len(rows)
     summary = re.search(r"Result: (\d+) passed, (\d+) failed", sys_out)
     rows.sort(key=lambda r: int(r[1].split('-')[1]))
     need(rows and summary, "system test output not understood\n" + sys_out[-500:])
@@ -123,7 +124,7 @@ try:
     build_cov("cov_unit", ["tests/test_score.c", "src/score.c"], "test_score_cov.exe")
     run([os.path.join(tmp, "test_score_cov.exe")], tmp)
     unit_cov = gcov("cov_unit", ["src/score.c"])
-    # (b) system tests: instrumented program driven by the 20 scripted test cases
+    # (b) system tests: instrumented program driven by the scripted test cases
     build_cov("cov_sys", srcs, "quiz.exe")
     for f in os.listdir(tmp):
         if f.endswith(".gcda") or f.endswith(".gcov"):
@@ -234,7 +235,7 @@ Measured with `gcc --coverage` and `gcov`. I built the program with coverage tur
 
 {lines_table(unit_cov)}
 
-## System tests (the 20 test cases against the whole program)
+## System tests (the {n_sys} test cases against the whole program)
 
 {lines_table(sys_cov)}
 
@@ -256,7 +257,7 @@ Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches
 
 {branch_table(unit_cov)}
 
-## System tests (the 20 test cases against the whole program)
+## System tests (the {n_sys} test cases against the whole program)
 
 {branch_table(sys_cov)}
 

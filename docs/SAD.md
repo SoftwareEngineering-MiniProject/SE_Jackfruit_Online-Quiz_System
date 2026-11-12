@@ -57,7 +57,7 @@ The goals are a small, readable program that four people can build at the same t
 | Component | Files | What it does | Functions it offers | Owner |
 |---|---|---|---|---|
 | Menu Controller | `src/main.c` | Shows the menu, checks the menu choice, asks for the player name, calls the chosen feature, shows instructions, exits cleanly | none (entry point) | Tejas |
-| Quiz Engine | `src/quiz.c`, `include/quiz.h` | Loads the question bank (`data/quiz.db`), shows one question at a time, checks and records each answer | **IQuiz**: `load_questions`, `run_quiz` | Sanjana |
+| Quiz Engine | `src/quiz.c`, `include/quiz.h` | Loads the question bank (`data/quiz.db`), shows one question at a time, checks and records each answer | **IQuiz**: `load_questions`, `pick_questions`, `run_quiz` | Sanjana |
 | Scoring Module | `src/score.c`, `include/score.h` | Compares answers with the correct options, counts correct and incorrect answers, works out the percentage and Pass/Fail (40%), shows the result screen | **IScore**: `calculate_result`, `show_result` | Vikas |
 | Result Storage and Leaderboard | `src/storage.c`, `include/storage.h` | Adds `Name,Score` to `results.txt`, reads the results back, shows the leaderboard from high score to low | **IStorage**: `save_result`, `show_leaderboard` | Vaishnavi |
 
@@ -107,7 +107,7 @@ The only link between modules is the two shared data types: `score.h` includes `
 | REQ-12 (pass result to storage) | Menu Controller, Storage | `save_result(name, &result)` call in `start_quiz()` |
 | REQ-13 (save name and score) | Storage | `save_result()` |
 | REQ-14 to REQ-16 (read, sort, missing file) | Storage | `show_leaderboard()` |
-| REQ-17 (load questions) | Quiz Engine | `load_questions()` |
+| REQ-17 (load questions, 10 random per quiz) | Quiz Engine | `load_questions()`, `pick_questions()` |
 | REQ-18 to REQ-22 (show, validate, record, next, finish) | Quiz Engine | `run_quiz()` |
 | NFR-1 Performance | all | no heavy processing; input handled line by line |
 | NFR-2 Security (SEC-1 to SEC-6) | all | see 3.9 |
@@ -170,6 +170,7 @@ All interfaces are C functions declared in the header files. There is no network
 | Function | Interface | What it does | Returns | On error |
 |---|---|---|---|---|
 | `int load_questions(const char *path, Question qs[], int max)` | IQuiz (`quiz.h`) | Reads up to `max` questions from the file into `qs` | Number loaded, or -1 on error | File missing or no valid question: -1 (the caller prints the message) |
+| `int pick_questions(Question qs[], int n, int count, int shuffle)` | IQuiz (`quiz.h`) | Keeps `count` of the `n` loaded questions, chosen at random without repeats (or the first `count` in order when `shuffle` is 0) | Number kept | Bad arguments: 0 |
 | `void run_quiz(const Question qs[], int n, char answers[])` | IQuiz (`quiz.h`) | Shows questions 0 to n-1 one at a time and stores each answer as `'A'` to `'D'` | nothing; `answers[i]` is filled | Invalid choice: `Error:` line and the same question again. End of input: stops, remaining answers stay 0 |
 | `Result calculate_result(const Question qs[], const char answers[], int n)` | IScore (`score.h`) | Checks the answers and works out score, counts, percentage and Pass/Fail (>= 40%) | A `Result` | NULL argument or `n <= 0`: all-zero `Result` |
 | `void show_result(const Result *r)` | IScore (`score.h`) | Prints score, percentage, counts and Pass/Fail | nothing | `r` is NULL: `Error: result is unavailable.` |

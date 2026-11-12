@@ -8,7 +8,7 @@ I used Claude Code (Anthropic) in VS Code while working on this project. The cou
 
 I gave it one task at a time, usually taken straight from the course PDFs, our SRS, or the instructor's feedback after the checkpoint. I read what came back, ran the code, and asked for changes when something was off. For example, I asked for simpler wording in the documents, shorter sections in the SAD and Test Plan, and a different format for the user stories.
 
-Nothing was accepted just because it looked right. Code changes had to build without warnings and pass `make test`. Before the final submission I also ran the 20 system test cases with `tests/run_system_tests.sh`. GitHub Actions built every push and pull request.
+Nothing was accepted just because it looked right. Code changes had to build without warnings and pass `make test`. Before the final submission I also ran the 22 system test cases with `tests/run_system_tests.sh`. GitHub Actions built every push and pull request.
 
 ## Process we followed
 

@@ -25,6 +25,28 @@ static char parse_answer(const char *s)
     return (*s == '\0') ? c : 0;
 }
 
+/* Chooses which questions a quiz uses: a random selection of count questions
+   without repeats (partial Fisher-Yates shuffle), or the first count in order. */
+int pick_questions(Question qs[], int n, int count, int shuffle)
+{
+    int i;
+
+    if (qs == NULL || n <= 0)
+        return 0;
+    if (count <= 0 || count > n)
+        count = n;
+    if (shuffle) {
+        for (i = 0; i < count; i++) {
+            int j = i + rand() % (n - i);
+            Question tmp = qs[i];
+
+            qs[i] = qs[j];
+            qs[j] = tmp;
+        }
+    }
+    return count;
+}
+
 /* Copies a text column into dest (size bytes). A NULL column becomes "" and
    anything too long is cut, so the fields can never overflow (NFR-4). */
 static void copy_column(char *dest, size_t size, const unsigned char *src)

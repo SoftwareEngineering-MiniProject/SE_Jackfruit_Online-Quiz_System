@@ -1,5 +1,5 @@
 #!/bin/bash
-# System tests for the Online Quiz System (Test Plan section 13, TC-01 to TC-20).
+# System tests for the Online Quiz System (Test Plan section 13, TC-01 to TC-22).
 # Run from the repository root after building:  make && bash tests/run_system_tests.sh [path-of-make]
 # It sends input to the program, checks the output, and prints PASS or FAIL for each test case.
 
@@ -14,7 +14,7 @@ check() {   # check "TC-xx" "description" <command that succeeds when the test p
     if "$@"; then echo "PASS  $id  $desc"; pass=$((pass+1)); else echo "FAIL  $id  $desc"; fail=$((fail+1)); fi
 }
 fresh()   { rm -rf results.txt; }
-play()    { printf "$1" | $Q 2>/dev/null; }
+play()    { printf "$1" | QUIZ_ORDERED=1 QUIZ_COUNT=5 $Q 2>/dev/null; }
 count()   { grep -c -F "$2" <<<"$1"; }
 
 BACKUP=""
@@ -108,6 +108,29 @@ t18() {
     return 0
 }
 check TC-18 "no gets/scanf/sprintf; file names are fixed" t18
+
+# TC-21 a quiz uses 10 different questions from the bank
+fresh; out=$(printf '1
+Asha
+'"$(printf 'A
+%.0s' 1 2 3 4 5 6 7 8 9 10)"'4
+' | $Q 2>/dev/null)
+t21() {
+    grep -qF "Question 10 of 10" <<<"$out" || return 1
+    [ "$(grep -c 'Question [0-9]* of' <<<"$out")" = 10 ] || return 1
+    [ "$(grep -A1 'Question [0-9]* of' <<<"$out" | grep -v -e 'Question' -e '^--' | sort | uniq -d | wc -l)" = 0 ]
+}
+check TC-21 "a normal quiz asks 10 questions and none repeats" t21
+
+# TC-22 two quizzes do not ask the same questions in the same order
+first() { printf '1
+Asha
+'"$(printf 'A
+%.0s' 1 2 3 4 5 6 7 8 9 10)"'4
+' | $Q 2>/dev/null | grep -A1 'Question [0-9]* of' | grep -v -e 'Question' -e '^--' | tr -d '' | md5sum; }
+fresh; a=$(first); b=$(first); c=$(first)
+t22() { [ "$a" != "$b" ] || [ "$b" != "$c" ]; }
+check TC-22 "three quizzes in a row are not all the same" t22
 
 # TC-20 every error message starts with "Error:"
 t20() { ! grep -hE 'printf\(".*(could not|please enter|unavailable)' src/*.c | grep -v 'Error:' >/dev/null; }

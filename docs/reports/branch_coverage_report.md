@@ -1,6 +1,6 @@
 # Branch coverage report
 
-Date: 2026-11-12  |  Commit: `bd94a81`  |  Project: Online Quiz System
+Date: 2026-11-12  |  Commit: `e806d69`  |  Project: Online Quiz System
 
 Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches the tests got to. "Taken" is the share that were followed in at least one direction.
 
@@ -10,22 +10,22 @@ Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches
 |---|---|---|---|
 | `src/score.c` | 18 | 100.0% | 100.0% |
 
-## System tests (the 20 test cases against the whole program)
+## System tests (the 22 test cases against the whole program)
 
 | File | Branches | Reached | Taken |
 |---|---|---|---|
-| `src/main.c` | 60 | 90.0% | 68.3% |
-| `src/quiz.c` | 68 | 91.2% | 60.3% |
+| `src/main.c` | 62 | 90.3% | 69.3% |
+| `src/quiz.c` | 80 | 92.5% | 65.0% |
 | `src/score.c` | 18 | 100.0% | 77.8% |
 | `src/storage.c` | 68 | 91.2% | 63.2% |
-| **All source files** | 214 | **91.6%** | **65.0%** |
+| **All source files** | 228 | **92.1%** | **66.7%** |
 
 ### Branches the system tests never took
 
-- `src/main.c` line 71
-- `src/main.c` line 73
-- `src/quiz.c` line 104
-- `src/quiz.c` line 105
+- `src/main.c` line 80
+- `src/main.c` line 82
+- `src/quiz.c` line 126
+- `src/quiz.c` line 127
 - `src/storage.c` line 59
 - `src/storage.c` line 60
 

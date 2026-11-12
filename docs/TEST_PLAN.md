@@ -86,7 +86,7 @@ Security testing covers the six security requirements in SRS Section 5.3.2. The 
 
 ## 6. Test Environment
 
-Windows 11 (MinGW GCC, PowerShell or Git Bash) and Ubuntu (GitHub Actions); GCC with `-Wall -std=c99` and GNU Make. Test data: `data/quiz.db` (5 questions) and sample `results.txt` files. Tests are run from the repository root.
+Windows 11 (MinGW GCC, PowerShell or Git Bash) and Ubuntu (GitHub Actions); GCC with `-Wall -std=c99` and GNU Make. Test data: `data/quiz.db` (25 questions; the scripted tests set `QUIZ_ORDERED=1` and `QUIZ_COUNT=5` to get the first 5 questions in a fixed order) and sample `results.txt` files. Tests are run from the repository root.
 
 ---
 
@@ -162,6 +162,8 @@ First run on 12-Oct-2026 (the quiz engine and leaderboard were not merged yet). 
 | TC-17 | SEC-3, NFR-4 | Security / negative | A 5000-character line at the menu, then `4` | One `Error:` message, program continues and exits normally | **Pass** |
 | TC-18 | SEC-5, SEC-3 | Inspection | Search the source for `fopen`, `gets`, `scanf`, `sprintf`, `strcpy` | File names are fixed constants; no unsafe input functions | **Pass** |
 | TC-19 | NFR-5 | Inspection | Build `score.c` with its test, without the other modules | Builds and runs on its own | **Pass** (`make test`) |
+| TC-21 | REQ-17, REQ-22 | System | Start a quiz without any test settings and answer to the end | Exactly 10 questions are asked and none is repeated | **Pass** |
+| TC-22 | REQ-17 | System | Take three quizzes one after another | The questions or their order are not the same every time | **Pass** |
 | TC-20 | NFR-3 | Inspection / usability | List every message printed on an error path, then finish a quiz using only the on-screen prompts | Each error starts with `Error:` and is followed by a prompt or the menu; every screen has a clear prompt | **Pass** (5 `Error:` messages; quiz finished with prompts only) |
 
 ### 13.2 Requirements Traceability Matrix
@@ -173,7 +175,7 @@ First run on 12-Oct-2026 (the quiz engine and leaderboard were not merged yet). 
 | REQ-11 | TC-08 |
 | REQ-12, REQ-13 | TC-10, TC-09 |
 | REQ-14 to REQ-16 | TC-13, TC-14 |
-| REQ-17 to REQ-22 | TC-11, TC-12 |
+| REQ-17 to REQ-22 | TC-11, TC-12, TC-21, TC-22 |
 | NFR-1 | TC-15 |
 | NFR-2 (SEC-1 to SEC-6) | TC-16, TC-09, TC-03, TC-17, TC-14, TC-18, TC-05 |
 | NFR-3 | TC-20 |
@@ -188,10 +190,10 @@ Every requirement in SRS v1.1 appears in at least one test case.
 
 **Report after the second execution (27-Oct-2026, with the leaderboard)**
 
-- Test cases designed: 20. Executed: 20. **Pass: 20. Fail: 0. Not run: 0.**
+- Test cases designed: 22. Executed: 22. **Pass: 22. Fail: 0. Not run: 0.** (TC-21 and TC-22 were added with the 25-question bank.)
 - Requirement coverage by test cases: 100% of REQ-1 to REQ-22 and NFR-1 to NFR-5.
 - Unit test coverage of `score.c`: 100% of lines and 100% of branches (measured with `gcov`).
-- With the 20 system tests running the whole program, gcov shows 83.2% of lines run, 91.6% of branches reached and 65.0% taken. The ones that were missed are listed in the coverage reports.
+- With the 22 system tests running the whole program, gcov shows 85.0% of lines run, 92.1% of branches reached and 66.7% taken. The ones that were missed are listed in the coverage reports.
 - The four final reports are in `docs/reports/` (unit, system validation, code coverage, branch coverage). `python tests/make_reports.py` regenerates them.
 - NFR-1 (speed): a full quiz run took 127 ms and the leaderboard of 100 results took 80 ms, against a limit of 1 second (TC-15).
 - NFR-2 (security): SEC-1 to SEC-6 are checked by TC-05, TC-09, TC-14, TC-16, TC-17 and TC-18, and all pass.
