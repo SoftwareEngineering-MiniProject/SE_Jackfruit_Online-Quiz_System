@@ -1,11 +1,15 @@
 #ifndef UI_H
 #define UI_H
 
-/* ui.h: optional terminal colours.
-   Colours are used only when the output goes to a terminal. When the output is
-   piped or redirected to a file (as in the tests), or when NO_COLOR is set,
-   ui() returns an empty string, so the text is exactly the same as before.
-   Set FORCE_COLOR=1 to switch colours on even when the output is piped. */
+/**
+ * @file ui.h
+ * @brief Optional terminal colours and sounds.
+ *
+ * Colours are used only when the output goes to a terminal. When the output is
+ * piped or redirected to a file (as in the tests), or when NO_COLOR is set,
+ * ui() returns an empty string, so the text is exactly the same as before.
+ * Set FORCE_COLOR=1 to switch colours on even when the output is piped.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +23,7 @@
 #define UI_ISATTY_STDOUT() isatty(1)
 #endif
 
+/* ANSI escape codes for the colours and styles used by the program. */
 #define UI_RESET   "\033[0m"
 #define UI_BOLD    "\033[1m"
 #define UI_DIM     "\033[2m"
@@ -29,39 +34,46 @@
 #define UI_MAGENTA "\033[95m"
 #define UI_CYAN    "\033[96m"
 
-/* 1 if colours are on, 0 if not. Worked out once per source file. */
-static inline int ui_on(void)
+/**
+ * @brief Tells whether colours are switched on.
+ * @return 1 if colours are on, 0 if not. Worked out once per source file.
+ */
+static inline int uiOn(void)
 {
-    static int state = -1;
+    static int colourState = -1;
 
-    if (state < 0) {
-        state = 0;
+    if (colourState < 0) {
+        colourState = 0;
         if (getenv("NO_COLOR") == NULL) {
             if (getenv("FORCE_COLOR") != NULL) {
-                state = 1;
+                colourState = 1;
             } else if (UI_ISATTY_STDOUT()) {
-                state = 1;
+                colourState = 1;
 #ifdef _WIN32
                 {
-                    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-                    DWORD mode = 0;
+                    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+                    DWORD consoleMode = 0;
 
                     /* ask the Windows console to understand colour codes */
-                    if (h == INVALID_HANDLE_VALUE || !GetConsoleMode(h, &mode) ||
-                        !SetConsoleMode(h, mode | 0x0004))
-                        state = 0;
+                    if (consoleHandle == INVALID_HANDLE_VALUE ||
+                        !GetConsoleMode(consoleHandle, &consoleMode) ||
+                        !SetConsoleMode(consoleHandle, consoleMode | 0x0004))
+                        colourState = 0;
                 }
 #endif
             }
         }
     }
-    return state;
+    return colourState;
 }
 
-/* Returns the colour code, or "" when colours are off. */
+/**
+ * @brief Returns the colour code, or "" when colours are off.
+ * @param code  One of the UI_* colour or style macros.
+ */
 static inline const char *ui(const char *code)
 {
-    return ui_on() ? code : "";
+    return uiOn() ? code : "";
 }
 
 /* Optional sounds. Played only on a real terminal (never when piped, so the
@@ -71,25 +83,29 @@ static inline const char *ui(const char *code)
 #define UI_SOUND_PASS 1
 #define UI_SOUND_FAIL 2
 
-static inline void ui_sound(int kind)
+/**
+ * @brief Plays a short sound if sounds are enabled.
+ * @param soundKind  UI_SOUND_NEXT, UI_SOUND_PASS or UI_SOUND_FAIL.
+ */
+static inline void uiSound(int soundKind)
 {
-    static int state = -1;
+    static int soundState = -1;
 
-    if (state < 0)
-        state = (getenv("NO_SOUND") == NULL && UI_ISATTY_STDOUT()) ? 1 : 0;
-    if (!state)
+    if (soundState < 0)
+        soundState = (getenv("NO_SOUND") == NULL && UI_ISATTY_STDOUT()) ? 1 : 0;
+    if (!soundState)
         return;
 #ifdef _WIN32
-    if (kind == UI_SOUND_PASS) {
+    if (soundKind == UI_SOUND_PASS) {
         Beep(784, 90); Beep(988, 90); Beep(1319, 160);
-    } else if (kind == UI_SOUND_FAIL) {
+    } else if (soundKind == UI_SOUND_FAIL) {
         Beep(392, 150); Beep(262, 250);
     } else {
         Beep(880, 60);
     }
 #else
-    (void)kind;
-    putchar('');
+    (void)soundKind;
+    putchar('\a');
     fflush(stdout);
 #endif
 }

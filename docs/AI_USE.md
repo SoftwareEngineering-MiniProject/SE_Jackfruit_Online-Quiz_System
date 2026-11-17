@@ -21,7 +21,7 @@ Nothing was accepted just because it looked right. Code changes had to build wit
 ## What the AI did
 
 - Reviewed and merged the teammates' pull requests after checking the build and tests.
-- Wrote the quiz flow (`run_quiz`) and the leaderboard (`show_leaderboard`), and added a few unit tests (tests 6 to 8 in `tests/test_score.c`).
+- Wrote the quiz flow (`runQuiz`) and the leaderboard (`showLeaderboard`), and added a few unit tests (tests 6 to 8 in `tests/test_score.c`).
 - Drafted the SAD and the Test Plan, fixed and simplified the SRS, and made the Word and PDF versions.
 - Wrote `tests/run_system_tests.sh`.
 - Rewrote the issues as user stories, set up the epics, and moved the repo and board to the organisation.

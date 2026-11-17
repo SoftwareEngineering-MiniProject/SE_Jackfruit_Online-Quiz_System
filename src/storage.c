@@ -1,3 +1,12 @@
+/**
+ * @file storage.c
+ * @brief Result storage and leaderboard (owner: Vaishnavi).
+ *
+ * Results are kept as "Name,Score" lines in results.txt. The leaderboard
+ * reads the file again each time, skips badly formatted lines, and prints the
+ * scores from highest to lowest.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,133 +20,138 @@
 
 /* Appends "Name,Score" as one line to results.txt.
    Returns 0 on success, -1 on any error. */
-int save_result(const char *name, const Result *r)
+int saveResult(const char *playerName, const Result *result)
 {
-    FILE *fp;
-    const char *p;
+    FILE *resultsFile;
+    const char *nameChar;
 
-    if (name == NULL || r == NULL) {
+    if (playerName == NULL || result == NULL) {
         return -1;
     }
 
-    fp = fopen(RESULTS_FILE, "a");      /* "a" = append, keeps old results */
-    if (fp == NULL) {
-        return -1;                       /* no paths or details printed */
+    resultsFile = fopen(RESULTS_FILE, "a");   /* "a" = append, keeps old results */
+    if (resultsFile == NULL) {
+        return -1;                            /* no paths or details printed */
     }
 
     /* Commas/newlines in a name would break the Name,Score format,
        so replace them with spaces. */
-    for (p = name; *p != '\0'; p++) {
-        fputc((*p == ',' || *p == '\n' || *p == '\r') ? ' ' : *p, fp);
+    for (nameChar = playerName; *nameChar != '\0'; nameChar++) {
+        fputc((*nameChar == ',' || *nameChar == '\n' || *nameChar == '\r') ? ' ' : *nameChar,
+              resultsFile);
     }
-    fprintf(fp, ",%d\n", r->score);
+    fprintf(resultsFile, ",%d\n", result->score);
 
-    if (fclose(fp) != 0) {
+    if (fclose(resultsFile) != 0) {
         return -1;
     }
     return 0;
 }
 
+/** One line of the results file: a player name and a score. */
 typedef struct {
     char name[NAME_LEN];
     int score;
 } Entry;
 
-/* Reads one line (without the line ending) into buf and drops any extra
+/* Reads one line (without the line ending) into buffer and drops any extra
    characters so the next read starts on a new line. Returns 0 on success,
    -1 at end of file. */
-static int read_line(FILE *fp, char *buf, size_t size)
+static int readLine(FILE *file, char *buffer, size_t size)
 {
-    size_t len;
-    int c;
+    size_t length;
+    int discarded;
 
-    if (fgets(buf, (int)size, fp) == NULL)
+    if (fgets(buffer, (int)size, file) == NULL)
         return -1;
-    len = strlen(buf);
-    if (len > 0 && buf[len - 1] == '\n') {
-        buf[--len] = '\0';
-    } else if (!feof(fp)) {
-        while ((c = fgetc(fp)) != '\n' && c != EOF)
+    length = strlen(buffer);
+    if (length > 0 && buffer[length - 1] == '\n') {
+        buffer[--length] = '\0';
+    } else if (!feof(file)) {
+        while ((discarded = fgetc(file)) != '\n' && discarded != EOF)
             ;
     }
-    if (len > 0 && buf[len - 1] == '\r')
-        buf[len - 1] = '\0';
+    if (length > 0 && buffer[length - 1] == '\r')
+        buffer[length - 1] = '\0';
     return 0;
 }
 
 /* Splits "Name,Score" into an Entry. Returns 0 if the line is valid,
    -1 if it is in the wrong format (such lines are skipped). */
-static int parse_entry(const char *line, Entry *e)
+static int parseEntry(const char *line, Entry *entry)
 {
     const char *comma = strrchr(line, ',');
-    char *end;
+    char *scoreEnd;
     long score;
-    size_t n;
+    size_t nameLength;
 
     if (comma == NULL || comma == line)
         return -1;
-    score = strtol(comma + 1, &end, 10);
-    if (end == comma + 1 || *end != '\0' || score < 0 || score > 1000000)
+    score = strtol(comma + 1, &scoreEnd, 10);
+    if (scoreEnd == comma + 1 || *scoreEnd != '\0' || score < 0 || score > 1000000)
         return -1;
-    n = (size_t)(comma - line);
-    if (n >= NAME_LEN)
-        n = NAME_LEN - 1;
-    memcpy(e->name, line, n);
-    e->name[n] = '\0';
-    e->score = (int)score;
+    nameLength = (size_t)(comma - line);
+    if (nameLength >= NAME_LEN)
+        nameLength = NAME_LEN - 1;
+    memcpy(entry->name, line, nameLength);
+    entry->name[nameLength] = '\0';
+    entry->score = (int)score;
     return 0;
 }
 
 /* Gold, silver and bronze colours for the first three places. */
-static const char *rank_colour(int index)
+static const char *rankColour(int rankIndex)
 {
-    if (index == 0)
+    if (rankIndex == 0)
         return ui(UI_BOLD UI_YELLOW);
-    if (index == 1)
+    if (rankIndex == 1)
         return ui(UI_BOLD);
-    if (index == 2)
+    if (rankIndex == 2)
         return ui(UI_MAGENTA);
     return "";
 }
 
 /* Reads results.txt and prints the entries from the highest score to the
    lowest. Entries with the same score keep the order they were saved in. */
-void show_leaderboard(void)
+void showLeaderboard(void)
 {
-    static Entry list[MAX_ENTRIES];
+    static Entry entries[MAX_ENTRIES];
     char line[LINE_LEN];
-    Entry e;
-    FILE *fp;
-    int count = 0;
-    int i, j;
+    Entry entry;
+    FILE *resultsFile;
+    int entryCount = 0;
+    int insertIndex, printIndex;
 
-    fp = fopen(RESULTS_FILE, "r");
-    if (fp == NULL) {
+    resultsFile = fopen(RESULTS_FILE, "r");
+    if (resultsFile == NULL) {
         printf("\n%sNo results yet. Play a quiz first.%s\n", ui(UI_YELLOW), ui(UI_RESET));
         return;
     }
 
-    while (read_line(fp, line, sizeof line) == 0) {
-        if (parse_entry(line, &e) != 0)
+    while (readLine(resultsFile, line, sizeof line) == 0) {
+        if (parseEntry(line, &entry) != 0)
             continue;                       /* skip lines in the wrong format */
-        if (count >= MAX_ENTRIES)
+        if (entryCount >= MAX_ENTRIES)
             break;
         /* Insert so the list stays sorted high to low; "<" keeps equal
            scores in the order they were saved. */
-        for (i = count; i > 0 && list[i - 1].score < e.score; i--)
-            list[i] = list[i - 1];
-        list[i] = e;
-        count++;
+        for (insertIndex = entryCount;
+             insertIndex > 0 && entries[insertIndex - 1].score < entry.score;
+             insertIndex--)
+            entries[insertIndex] = entries[insertIndex - 1];
+        entries[insertIndex] = entry;
+        entryCount++;
     }
-    fclose(fp);
+    fclose(resultsFile);
 
-    if (count == 0) {
+    if (entryCount == 0) {
         printf("\n%sNo results yet. Play a quiz first.%s\n", ui(UI_YELLOW), ui(UI_RESET));
         return;
     }
 
     printf("\n%s%s===== Leaderboard =====%s\n", ui(UI_BOLD), ui(UI_CYAN), ui(UI_RESET));
     printf("%s%-5s %-30s %s%s\n", ui(UI_BOLD), "Rank", "Name", "Score", ui(UI_RESET));
-    for (j = 0; j < count; j++)
-        printf("%s%-5d %-30.30s %d%s\n", rank_colour(j), j + 1, list[j].name, list[j].score, ui(UI_RESET));
+    for (printIndex = 0; printIndex < entryCount; printIndex++)
+        printf("%s%-5d %-30.30s %d%s\n", rankColour(printIndex), printIndex + 1,
+               entries[printIndex].name, entries[printIndex].score, ui(UI_RESET));
 }

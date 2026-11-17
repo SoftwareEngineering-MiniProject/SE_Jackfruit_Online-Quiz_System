@@ -46,7 +46,7 @@ check TC-05 "option 4 and empty input both exit cleanly (exit code 0)" t05
 ut=$($MAKE test 2>&1); t06() { grep -qF "All test cases passed" <<<"$ut"; }
 check TC-06 "scoring unit tests: counts and percentage" t06
 check TC-07 "scoring unit tests: 40% boundary" t06
-check TC-08 "show_result unit tests incl. NULL" t06
+check TC-08 "showResult unit tests incl. NULL" t06
 check TC-19 "score.c builds and runs on its own (make test)" t06
 
 # TC-09 name with a comma

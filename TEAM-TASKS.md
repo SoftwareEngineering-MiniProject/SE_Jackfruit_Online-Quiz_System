@@ -38,8 +38,8 @@ typedef struct {
     char options[4][128];
     char correct;              /* 'A'..'D' */
 } Question;
-int  load_questions(const char *path, Question qs[], int max);  /* returns count, -1 on error */
-void run_quiz(const Question qs[], int n, char answers[]);      /* fills answers[i] with 'A'..'D' */
+int  loadQuestions(const char *path, Question qs[], int max);  /* returns count, -1 on error */
+void runQuiz(const Question qs[], int n, char answers[]);      /* fills answers[i] with 'A'..'D' */
 
 /* score.h (Vikas) */
 typedef struct {
@@ -47,12 +47,12 @@ typedef struct {
     double percent;
     int passed;                /* 1 = Pass, 0 = Fail */
 } Result;
-Result calculate_result(const Question qs[], const char answers[], int n);
-void   show_result(const Result *r);
+Result calculateResult(const Question qs[], const char answers[], int n);
+void   showResult(const Result *r);
 
 /* storage.h (Vaishnavi) */
-int  save_result(const char *name, const Result *r);   /* 0 ok, -1 error */
-void show_leaderboard(void);                            /* reads results.txt, sorted high to low */
+int  saveResult(const char *name, const Result *r);   /* 0 ok, -1 error */
+void showLeaderboard(void);                            /* reads results.txt, sorted high to low */
 ```
 
 ## Your tasks

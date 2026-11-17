@@ -1,4 +1,4 @@
-name: Build
+name: Build and test
 
 on:
   push:
@@ -11,5 +11,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install SQLite
         run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
-      - name: Build
+      - name: Build (warnings are shown, -Wall)
         run: make
+      - name: Unit tests (8 test cases for the scoring module)
+        run: make test
+      - name: System tests (TC-01 to TC-22)
+        run: bash tests/run_system_tests.sh

@@ -52,6 +52,7 @@ Both sprints are finished. All 32 user stories are done.
 - [SRS: what the program must do](docs/SRS.pdf)
 - [SAD: how the program is built](docs/SAD.pdf)
 - [Test Plan: how we check it](docs/Test_Plan.pdf)
+- [Coding standard](docs/CODING_STANDARD.md)
 - [Team tasks](TEAM-TASKS.md)
 - Test reports in docs/reports: [unit](docs/reports/unit_test_report.md), [system validation](docs/reports/system_validation_report.md), [code coverage](docs/reports/code_coverage_report.md), [branch coverage](docs/reports/branch_coverage_report.md)
 - [AI use note](docs/AI_USE.md)
@@ -74,5 +75,6 @@ The same documents are also kept as text: [SRS.md](SRS.md), [docs/SAD.md](docs/S
 - Requirements are written as user stories ("As a ..., I want ..., so that ...") and grouped under 6 epics (EPIC-1 to EPIC-6)
 - One GitHub issue per requirement, tracked on the project board
 - One pull request per issue, raised by the person it is assigned to
-- GitHub Actions builds the code on every push and pull request
+- GitHub Actions builds the code and runs the unit and system tests on every push and pull request
+- Code follows the [coding standard](docs/CODING_STANDARD.md) (camelCase names, documented functions)
 - The repo owner reviews and merges

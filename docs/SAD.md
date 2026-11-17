@@ -57,9 +57,9 @@ The goals are a small, readable program that four people can build at the same t
 | Component | Files | What it does | Functions it offers | Owner |
 |---|---|---|---|---|
 | Menu Controller | `src/main.c` | Shows the menu, checks the menu choice, asks for the player name, calls the chosen feature, shows instructions, exits cleanly | none (entry point) | Tejas |
-| Quiz Engine | `src/quiz.c`, `include/quiz.h` | Loads the question bank (`data/quiz.db`), shows one question at a time, checks and records each answer | **IQuiz**: `load_questions`, `pick_questions`, `run_quiz` | Sanjana |
-| Scoring Module | `src/score.c`, `include/score.h` | Compares answers with the correct options, counts correct and incorrect answers, works out the percentage and Pass/Fail (40%), shows the result screen | **IScore**: `calculate_result`, `show_result` | Vikas |
-| Result Storage and Leaderboard | `src/storage.c`, `include/storage.h` | Adds `Name,Score` to `results.txt`, reads the results back, shows the leaderboard from high score to low | **IStorage**: `save_result`, `show_leaderboard` | Vaishnavi |
+| Quiz Engine | `src/quiz.c`, `include/quiz.h` | Loads the question bank (`data/quiz.db`), shows one question at a time, checks and records each answer | **IQuiz**: `loadQuestions`, `pickQuestions`, `runQuiz` | Sanjana |
+| Scoring Module | `src/score.c`, `include/score.h` | Compares answers with the correct options, counts correct and incorrect answers, works out the percentage and Pass/Fail (40%), shows the result screen | **IScore**: `calculateResult`, `showResult` | Vikas |
+| Result Storage and Leaderboard | `src/storage.c`, `include/storage.h` | Adds `Name,Score` to `results.txt`, reads the results back, shows the leaderboard from high score to low | **IStorage**: `saveResult`, `showLeaderboard` | Vaishnavi |
 
 The only link between modules is the two shared data types: `score.h` includes `quiz.h` (for `Question`) and `storage.h` includes `score.h` (for `Result`). Modules do not call each other's functions. The Menu Controller calls them one after another.
 
@@ -85,7 +85,7 @@ The only link between modules is the two shared data types: `score.h` includes `
 ### 3.6 Technology Stack and Data Stores
 
 - **Language and build:** C (C99), GCC and `make` (`make` builds `quiz` and links the SQLite library, `make test` runs the score tests, `make db` rebuilds the question database from `data/questions.sql`).
-- **Version control and CI:** Git and GitHub; a GitHub Actions workflow runs `make` on every push and pull request.
+- **Version control and CI:** Git and GitHub; a GitHub Actions workflow runs `make`, `make test` and the system test script on every push and pull request.
 - **Question bank:** SQLite database `data/quiz.db`, table `questions` (`id`, `text`, `option_a` to `option_d`, `correct` = A to D). It is built from the readable script `data/questions.sql`.
 - **Results store:** `results.txt`. One `Name,Score` line per attempt, appended.
 
@@ -93,7 +93,7 @@ The only link between modules is the two shared data types: `score.h` includes `
 
 | Risk | Impact | Mitigation |
 |---|---|---|
-| Question file is in the wrong format or missing | Quiz cannot start | `load_questions` returns an error; the menu shows an error and continues (NFR-4) |
+| Question file is in the wrong format or missing | Quiz cannot start | `loadQuestions` returns an error; the menu shows an error and continues (NFR-4) |
 | Two people edit the same file | Merge conflicts | One owner per file; one pull request per issue, reviewed by the repo owner |
 | `results.txt` edited by hand or damaged | Wrong leaderboard | Lines in the wrong format are skipped; the remaining risk is accepted (3.9) |
 
@@ -101,14 +101,14 @@ The only link between modules is the two shared data types: `score.h` includes `
 
 | Requirement | Component | Function / location |
 |---|---|---|
-| REQ-1 to REQ-6 (menu, validation, navigation, exit) | Menu Controller | `show_menu()`, `read_menu_choice()`, loop and `switch` in `main()` |
-| REQ-7 to REQ-10 (score, counts, percentage, Pass/Fail at 40%) | Scoring | `calculate_result()`, `PASS_PERCENT` |
-| REQ-11 (display result) | Scoring | `show_result()` |
-| REQ-12 (pass result to storage) | Menu Controller, Storage | `save_result(name, &result)` call in `start_quiz()` |
-| REQ-13 (save name and score) | Storage | `save_result()` |
-| REQ-14 to REQ-16 (read, sort, missing file) | Storage | `show_leaderboard()` |
-| REQ-17 (load questions, 10 random per quiz) | Quiz Engine | `load_questions()`, `pick_questions()` |
-| REQ-18 to REQ-22 (show, validate, record, next, finish) | Quiz Engine | `run_quiz()` |
+| REQ-1 to REQ-6 (menu, validation, navigation, exit) | Menu Controller | `showMenu()`, `readMenuChoice()`, loop and `switch` in `main()` |
+| REQ-7 to REQ-10 (score, counts, percentage, Pass/Fail at 40%) | Scoring | `calculateResult()`, `PASS_PERCENT` |
+| REQ-11 (display result) | Scoring | `showResult()` |
+| REQ-12 (pass result to storage) | Menu Controller, Storage | `saveResult(name, &result)` call in `startQuiz()` |
+| REQ-13 (save name and score) | Storage | `saveResult()` |
+| REQ-14 to REQ-16 (read, sort, missing file) | Storage | `showLeaderboard()` |
+| REQ-17 (load questions, 10 random per quiz) | Quiz Engine | `loadQuestions()`, `pickQuestions()` |
+| REQ-18 to REQ-22 (show, validate, record, next, finish) | Quiz Engine | `runQuiz()` |
 | NFR-1 Performance | all | no heavy processing; input handled line by line |
 | NFR-2 Security (SEC-1 to SEC-6) | all | see 3.9 |
 | NFR-3 Usability | all | `Error:` prefix and re-prompt (4.5) |
@@ -133,7 +133,7 @@ The system has no accounts, no network and no special rights. Bad data can come 
 
 ### 4.1 Design Overview
 
-`main()` runs a menu loop. Option 1 calls `start_quiz()`, which asks for a name, loads the questions, runs the quiz, calculates and shows the result, and saves it. Option 2 calls `show_leaderboard()`. Option 3 prints the instructions. Option 4 or end of input leaves the loop and exits.
+`main()` runs a menu loop. Option 1 calls `startQuiz()`, which asks for a name, loads the questions, runs the quiz, calculates and shows the result, and saves it. Option 2 calls `showLeaderboard()`. Option 3 prints the instructions. Option 4 or end of input leaves the loop and exits.
 
 **Shared data structures**
 
@@ -169,13 +169,13 @@ All interfaces are C functions declared in the header files. There is no network
 
 | Function | Interface | What it does | Returns | On error |
 |---|---|---|---|---|
-| `int load_questions(const char *path, Question qs[], int max)` | IQuiz (`quiz.h`) | Reads up to `max` questions from the file into `qs` | Number loaded, or -1 on error | File missing or no valid question: -1 (the caller prints the message) |
-| `int pick_questions(Question qs[], int n, int count, int shuffle)` | IQuiz (`quiz.h`) | Keeps `count` of the `n` loaded questions, chosen at random without repeats (or the first `count` in order when `shuffle` is 0) | Number kept | Bad arguments: 0 |
-| `void run_quiz(const Question qs[], int n, char answers[])` | IQuiz (`quiz.h`) | Shows questions 0 to n-1 one at a time and stores each answer as `'A'` to `'D'` | nothing; `answers[i]` is filled | Invalid choice: `Error:` line and the same question again. End of input: stops, remaining answers stay 0 |
-| `Result calculate_result(const Question qs[], const char answers[], int n)` | IScore (`score.h`) | Checks the answers and works out score, counts, percentage and Pass/Fail (>= 40%) | A `Result` | NULL argument or `n <= 0`: all-zero `Result` |
-| `void show_result(const Result *r)` | IScore (`score.h`) | Prints score, percentage, counts and Pass/Fail | nothing | `r` is NULL: `Error: result is unavailable.` |
-| `int save_result(const char *name, const Result *r)` | IStorage (`storage.h`) | Appends one `Name,Score` line to `results.txt`; commas and new lines in the name become spaces (SEC-2) | 0 on success, -1 on error | NULL argument or file problem: -1, prints nothing |
-| `void show_leaderboard(void)` | IStorage (`storage.h`) | Reads `results.txt` and prints the entries from highest to lowest score | nothing | File missing or unreadable: short "no results yet" message; bad lines are skipped |
+| `int loadQuestions(const char *path, Question qs[], int max)` | IQuiz (`quiz.h`) | Reads up to `max` questions from the file into `qs` | Number loaded, or -1 on error | File missing or no valid question: -1 (the caller prints the message) |
+| `int pickQuestions(Question qs[], int n, int count, int shuffle)` | IQuiz (`quiz.h`) | Keeps `count` of the `n` loaded questions, chosen at random without repeats (or the first `count` in order when `shuffle` is 0) | Number kept | Bad arguments: 0 |
+| `void runQuiz(const Question qs[], int n, char answers[])` | IQuiz (`quiz.h`) | Shows questions 0 to n-1 one at a time and stores each answer as `'A'` to `'D'` | nothing; `answers[i]` is filled | Invalid choice: `Error:` line and the same question again. End of input: stops, remaining answers stay 0 |
+| `Result calculateResult(const Question qs[], const char answers[], int n)` | IScore (`score.h`) | Checks the answers and works out score, counts, percentage and Pass/Fail (>= 40%) | A `Result` | NULL argument or `n <= 0`: all-zero `Result` |
+| `void showResult(const Result *r)` | IScore (`score.h`) | Prints score, percentage, counts and Pass/Fail | nothing | `r` is NULL: `Error: result is unavailable.` |
+| `int saveResult(const char *name, const Result *r)` | IStorage (`storage.h`) | Appends one `Name,Score` line to `results.txt`; commas and new lines in the name become spaces (SEC-2) | 0 on success, -1 on error | NULL argument or file problem: -1, prints nothing |
+| `void showLeaderboard(void)` | IStorage (`storage.h`) | Reads `results.txt` and prints the entries from highest to lowest score | nothing | File missing or unreadable: short "no results yet" message; bad lines are skipped |
 
 **Data formats**
 
@@ -199,7 +199,7 @@ Each error is shown as one line starting with `Error:`, and then the program goe
 | E4 | Invalid answer during the quiz | `Error:` line and the same question again | REQ-19 |
 | E5 | Results file cannot be written | `Error: could not save your result.` and back to the menu | SEC-4 |
 | E6 | Results file missing at the leaderboard, or a line in the wrong format | Short "no results yet" message, or the line is skipped | REQ-16, SEC-4 |
-| E7 | Scoring called with NULL or `n <= 0` | Zeroed `Result`; `show_result(NULL)` prints `Error: result is unavailable.` | NFR-4 |
+| E7 | Scoring called with NULL or `n <= 0` | Zeroed `Result`; `showResult(NULL)` prints `Error: result is unavailable.` | NFR-4 |
 
 **Logging.** The quiz keeps no log file, because a log file would be one more place where information could leak. Errors are shown on the screen only.
 

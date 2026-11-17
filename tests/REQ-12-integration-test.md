@@ -18,7 +18,7 @@ Verify that the completed quiz result is passed to the storage module after each
 
 - The quiz calculates the final score and percentage.
 - The final result is displayed after the quiz ends.
-- The player's name and completed result are passed to `save_result()`.
+- The player's name and completed result are passed to `saveResult()`.
 - The storage function successfully appends the player's name and score to `results.txt`.
 
 ## Acceptance Criteria

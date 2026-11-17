@@ -1,17 +1,45 @@
 #ifndef QUIZ_H
 #define QUIZ_H
 
-/* quiz.h (Sanjana) */
+/**
+ * @file quiz.h
+ * @brief Quiz engine: loading questions, choosing which ones to ask, and
+ *        running the question-and-answer loop (owner: Sanjana).
+ */
+
+/** One multiple-choice question. */
 typedef struct {
-    char text[256];
-    char options[4][128];
-    char correct;              /* 'A'..'D' */
+    char text[256];          /**< The question text. */
+    char options[4][128];    /**< Option texts for A, B, C and D. */
+    char correct;            /**< Correct option letter, 'A' to 'D'. */
 } Question;
-int  load_questions(const char *path, Question qs[], int max);  /* returns count, -1 on error */
-/* Keeps count questions from the n loaded (all of them if count is 0 or more than n).
-   With shuffle != 0 the kept questions are chosen at random, with no repeats, in a
-   random order. Returns how many questions are kept. */
-int  pick_questions(Question qs[], int n, int count, int shuffle);
-void run_quiz(const Question qs[], int n, char answers[]);      /* fills answers[i] with 'A'..'D' */
+
+/**
+ * @brief Loads questions from the SQLite question bank.
+ * @param path          Path of the database file.
+ * @param questions     Output array, filled with the valid questions found.
+ * @param maxQuestions  Size of the output array.
+ * @return Number of questions loaded, or -1 on error.
+ */
+int loadQuestions(const char *path, Question questions[], int maxQuestions);
+
+/**
+ * @brief Chooses the questions for one quiz.
+ *
+ * Keeps wantedCount questions out of the loadedCount loaded (all of them if
+ * wantedCount is 0 or more than loadedCount). With shuffle != 0 the kept
+ * questions are chosen at random, without repeats, in random order.
+ *
+ * @return How many questions are kept.
+ */
+int pickQuestions(Question questions[], int loadedCount, int wantedCount, int shuffle);
+
+/**
+ * @brief Asks every question and records the answers.
+ * @param questions      The questions to ask.
+ * @param questionCount  How many questions there are.
+ * @param answers        Output: answers[i] is 'A' to 'D', or 0 if unanswered.
+ */
+void runQuiz(const Question questions[], int questionCount, char answers[]);
 
 #endif

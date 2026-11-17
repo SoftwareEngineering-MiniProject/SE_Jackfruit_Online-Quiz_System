@@ -15,7 +15,7 @@ Result: 22 test cases passed, 0 failed. The test cases are described in section 
 | TC-05 | REQ-6, SEC-6 | option 4 and empty input both exit cleanly (exit code 0) | Pass |
 | TC-06 | REQ-7, REQ-8, REQ-9 | scoring unit tests: counts and percentage | Pass |
 | TC-07 | REQ-10 | scoring unit tests: 40% boundary | Pass |
-| TC-08 | REQ-11 | show_result unit tests incl. NULL | Pass |
+| TC-08 | REQ-11 | showResult unit tests incl. NULL | Pass |
 | TC-09 | REQ-13, SEC-2 | comma in a name is replaced; one line per record | Pass |
 | TC-10 | REQ-12 | full quiz as Asha saves one Asha,<score> line | Pass |
 | TC-11 | REQ-17 to REQ-22 | 5 questions one at a time, result at the end | Pass |
@@ -41,7 +41,7 @@ PASS  TC-04  menu is shown again after the instructions
 PASS  TC-05  option 4 and empty input both exit cleanly (exit code 0)
 PASS  TC-06  scoring unit tests: counts and percentage
 PASS  TC-07  scoring unit tests: 40% boundary
-PASS  TC-08  show_result unit tests incl. NULL
+PASS  TC-08  showResult unit tests incl. NULL
 PASS  TC-19  score.c builds and runs on its own (make test)
 PASS  TC-09  comma in a name is replaced; one line per record
 PASS  TC-10  full quiz as Asha saves one Asha,<score> line

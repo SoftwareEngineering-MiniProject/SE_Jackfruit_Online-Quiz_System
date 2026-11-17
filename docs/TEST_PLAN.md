@@ -148,9 +148,9 @@ First run on 12-Oct-2026 (the quiz engine and leaderboard were not merged yet). 
 | TC-03 | REQ-3, NFR-4, SEC-3 | Negative | Enter `abc`, `0`, `5`, an empty line, `4 x` | Each gives `Error: please enter a number from 1 to 4.` and the menu again | **Pass** |
 | TC-04 | REQ-5 | Functional | Enter `3`, then `4` | Menu is shown again after the instructions | **Pass** |
 | TC-05 | REQ-6, SEC-6 | Functional / negative | (a) Enter `4`. (b) Empty standard input | Goodbye message and clean exit in both cases | **Pass** |
-| TC-06 | REQ-7, REQ-8, REQ-9 | Unit | `calculate_result` with 3, 1, 5 and 0 of 5 correct | Scores 3, 1, 5, 0; percentages 60, 20, 100, 0; correct + incorrect = total | **Pass** |
+| TC-06 | REQ-7, REQ-8, REQ-9 | Unit | `calculateResult` with 3, 1, 5 and 0 of 5 correct | Scores 3, 1, 5, 0; percentages 60, 20, 100, 0; correct + incorrect = total | **Pass** |
 | TC-07 | REQ-10 | Unit (boundary) | 4 of 10, then 3 of 10 correct | 40% is Pass; 30% is Fail | **Pass** |
-| TC-08 | REQ-11 | Unit | `show_result` with a result, then with NULL | Shows score, percentage, counts, Pass/Fail; NULL prints an `Error:` line, no crash | **Pass** |
+| TC-08 | REQ-11 | Unit | `showResult` with a result, then with NULL | Shows score, percentage, counts, Pass/Fail; NULL prints an `Error:` line, no crash | **Pass** |
 | TC-09 | REQ-13, SEC-2 | Functional / security | Save the name `Tara,Bad` | Record is `Tara Bad,<score>` on one line | **Pass** |
 | TC-10 | REQ-12 | Integration | Complete a quiz as `Asha` | New line `Asha,<score>` is added to `results.txt` | **Pass** (`Asha,3`) |
 | TC-11 | REQ-17 to REQ-22 | System | Start quiz, answer every question | One question at a time with options A to D; each answer recorded; result shown at the end | **Pass** |

@@ -3,8 +3,19 @@
 
 #include "score.h"
 
-/* storage.h (Vaishnavi) */
-int  save_result(const char *name, const Result *r);   /* 0 ok, -1 error */
-void show_leaderboard(void);                            /* reads results.txt, sorted high to low */
+/**
+ * @file storage.h
+ * @brief Saving results to results.txt and showing the leaderboard
+ *        (owner: Vaishnavi).
+ */
+
+/**
+ * @brief Appends "Name,Score" as one line to results.txt.
+ * @return 0 on success, -1 on error.
+ */
+int saveResult(const char *playerName, const Result *result);
+
+/** @brief Reads results.txt and prints the scores from highest to lowest. */
+void showLeaderboard(void);
 
 #endif
