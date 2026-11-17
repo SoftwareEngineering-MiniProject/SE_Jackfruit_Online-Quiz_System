@@ -57,6 +57,7 @@ Version 1.1
 Appendix A: Glossary
 Appendix B: Field Layouts
 Appendix C: Requirement Traceability Matrix
+Appendix D: RACI Matrix
 
 ---
 
@@ -457,3 +458,20 @@ Each line represents one completed quiz attempt.
 | 25 | NFR-3 | Usability: clear menus, prompts and error messages | 5.4 | Tejas |
 | 26 | NFR-4 | Reliability: no crash on invalid input or missing files | 5.4 | Sanjana |
 | 27 | NFR-5 | Maintainability: modular code structure | 5.4 | Vikas |
+
+## Appendix D: RACI Matrix
+
+R = Responsible (does the work), A = Accountable (one person with the final say), C = Consulted (two-way input before the work is done), I = Informed (told after it is done). Roles follow the file ownership in `TEAM-TASKS.md`.
+
+| Activity | Tejas | Sanjana | Vikas | Vaishnavi |
+|---|---|---|---|---|
+| Main menu, input validation, navigation (SRS 4.1, `main.c`) | A, R | C | I | I |
+| Quiz engine and question bank (SRS 4.2, `quiz.c`, `data/`) | A | R | C | I |
+| Scoring and result screen (SRS 4.3, `score.c`) | A | C | R | I |
+| Result storage and leaderboard (SRS 4.4, `storage.c`) | A | I | C | R |
+| Build, Makefile and GitHub Actions CI | A, R | I | I | I |
+| Unit tests for scoring | A | C | R | I |
+| System tests and test reports | A, R | R | C | C |
+| Requirements (SRS) and design (SAD) sections | A | R (4.2) | R (4.3) | R (4.4) |
+| Code review and merging pull requests | A, R | C | C | C |
+| Release, tags and final submission | A, R | I | I | I |

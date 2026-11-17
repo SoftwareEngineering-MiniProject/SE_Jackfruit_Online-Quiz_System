@@ -45,7 +45,7 @@ Both sprints are finished. All 32 user stories are done.
 | `data/quiz.db`, `data/questions.sql` | The question bank (SQLite database and the script that builds it) |
 | `tests/` | Unit tests |
 | `docs/` | Design document, test plan and diagrams |
-| `SRS.md` | Software Requirements Specification |
+| `SRS.md` | Software Requirements Specification (includes the RACI matrix, Appendix D) |
 
 ## Documents
 
@@ -53,6 +53,7 @@ Both sprints are finished. All 32 user stories are done.
 - [SAD: how the program is built](docs/SAD.pdf)
 - [Test Plan: how we check it](docs/Test_Plan.pdf)
 - [Coding standard](docs/CODING_STANDARD.md)
+- [SBOM: third-party components](SBOM.md) and the [LICENSE](LICENSE) (MIT)
 - [Team tasks](TEAM-TASKS.md)
 - Test reports in docs/reports: [unit](docs/reports/unit_test_report.md), [system validation](docs/reports/system_validation_report.md), [code coverage](docs/reports/code_coverage_report.md), [branch coverage](docs/reports/branch_coverage_report.md)
 - [AI use note](docs/AI_USE.md)

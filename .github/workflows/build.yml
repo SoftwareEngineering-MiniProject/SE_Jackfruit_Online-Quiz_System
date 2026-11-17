@@ -9,8 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install SQLite
-        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+      - name: Install SQLite and cppcheck
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev cppcheck
+      - name: Static analysis (cppcheck reports problems, it does not fail the build)
+        run: cppcheck --enable=warning,style,performance,portability --std=c99 --inline-suppr -Iinclude src/
       - name: Build (warnings are shown, -Wall)
         run: make
       - name: Unit tests (8 test cases for the scoring module)
