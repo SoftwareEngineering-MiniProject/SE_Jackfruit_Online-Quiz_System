@@ -1,6 +1,6 @@
 # Branch coverage report
 
-Date: 2026-11-12  |  Commit: `e806d69`  |  Project: Online Quiz System
+Date: 2026-11-17  |  Commit: `47e7d37`  |  Project: Online Quiz System
 
 Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches the tests got to. "Taken" is the share that were followed in at least one direction.
 
@@ -22,11 +22,11 @@ Measured with `gcc --coverage` and `gcov -b`. "Reached" is the share of branches
 
 ### Branches the system tests never took
 
-- `src/main.c` line 80
-- `src/main.c` line 82
-- `src/quiz.c` line 126
-- `src/quiz.c` line 127
-- `src/storage.c` line 59
-- `src/storage.c` line 60
+- `src/main.c` line 88
+- `src/main.c` line 90
+- `src/quiz.c` line 137
+- `src/quiz.c` line 138
+- `src/storage.c` line 70
+- `src/storage.c` line 71
 
 To regenerate this report: `python tests/make_reports.py`

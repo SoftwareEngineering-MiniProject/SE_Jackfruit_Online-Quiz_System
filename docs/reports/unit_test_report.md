@@ -1,6 +1,6 @@
 # Unit test report
 
-Date: 2026-11-12  |  Commit: `e806d69`  |  Project: Online Quiz System
+Date: 2026-11-17  |  Commit: `47e7d37`  |  Project: Online Quiz System
 
 These tests cover the scoring module (`src/score.c`) on its own. They are in `tests/test_score.c` and use `assert`. Run them with `make test`.
 
@@ -9,7 +9,7 @@ Result: all 8 tests passed.
 | Test | What it checks | Requirement |
 |---|---|---|
 | 1 to 4 | 3, 1, 5 and 0 answers right out of 5: score, counts, percentage, Pass or Fail | REQ-7, REQ-8, REQ-9 |
-| 5 | `showResult` given a NULL result does not crash | REQ-11, NFR-4 |
+| 5 | `show_result` given a NULL result does not crash | REQ-11, NFR-4 |
 | 6, 7 | The pass mark: 4 of 10 (40%) passes, 3 of 10 (30%) fails | REQ-10 |
 | 8 | Bad arguments (NULL, no questions) give an all-zero result | NFR-4 |
 

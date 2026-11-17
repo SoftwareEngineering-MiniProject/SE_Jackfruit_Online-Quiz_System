@@ -193,7 +193,7 @@ Every requirement in SRS v1.1 appears in at least one test case.
 - Test cases designed: 22. Executed: 22. **Pass: 22. Fail: 0. Not run: 0.** (TC-21 and TC-22 were added with the 25-question bank.)
 - Requirement coverage by test cases: 100% of REQ-1 to REQ-22 and NFR-1 to NFR-5.
 - Unit test coverage of `score.c`: 100% of lines and 100% of branches (measured with `gcov`).
-- With the 22 system tests running the whole program, gcov shows 85.0% of lines run, 92.1% of branches reached and 66.7% taken. The ones that were missed are listed in the coverage reports.
+- With the 22 system tests running the whole program, gcov shows 85.3% of lines run, 92.1% of branches reached and 66.7% taken. The ones that were missed are listed in the coverage reports.
 - The four final reports are in `docs/reports/` (unit, system validation, code coverage, branch coverage). `python tests/make_reports.py` regenerates them.
 - NFR-1 (speed): a full quiz run took 127 ms and the leaderboard of 100 results took 80 ms, against a limit of 1 second (TC-15).
 - NFR-2 (security): SEC-1 to SEC-6 are checked by TC-05, TC-09, TC-14, TC-16, TC-17 and TC-18, and all pass.
